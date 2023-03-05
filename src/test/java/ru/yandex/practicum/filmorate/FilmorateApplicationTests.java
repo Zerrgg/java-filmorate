@@ -74,7 +74,7 @@ class FilmorateApplicationTests {
     void AddUserWithProblemInTheLogin() {
 
         UserController controller = new UserController();
-        User user = new User("name@mail.ru", "Z zerrgg", LocalDate.of(1980, 1, 10));
+        User user = new User("Z zerrgg", "name@mail.ru", LocalDate.of(1980, 1, 10));
         assertThrows(ValidationException.class, () -> controller.addUser(user));
     }
 
@@ -82,7 +82,7 @@ class FilmorateApplicationTests {
     void AddUserWithoutName() throws ValidationException {
 
         UserController controller = new UserController();
-        User user = new User("name@mail.ru", "Zzerrgg", LocalDate.of(1985, 2, 20));
+        User user = new User("Zzerrgg", "name@mail.ru", LocalDate.of(1985, 2, 20));
         user.setName(null);
         controller.addUser(user);
         assertEquals(1, controller.getUsers().size(), "Пользователь не создан");
@@ -93,7 +93,7 @@ class FilmorateApplicationTests {
     void AddUser() throws ValidationException {
 
         UserController controller = new UserController();
-        User user = new User("name@mail.ru", "Zzerrgg", LocalDate.of(1990, 3, 30));
+        User user = new User("Zzerrgg", "name@mail.ru", LocalDate.of(1990, 3, 30));
         user.setName("Дмитрий");
         controller.addUser(user);
         assertEquals("Дмитрий", controller.getUsers().get(0).getName(), "Имя не совпадает");
@@ -103,10 +103,10 @@ class FilmorateApplicationTests {
     void UpdateUser() throws ValidationException {
 
         UserController controller = new UserController();
-        User user = new User("name@mail.ru", "Zzerrgg", LocalDate.of(1990, 3, 30));
+        User user = new User("Zzerrgg", "name@mail.ru", LocalDate.of(1990, 3, 30));
         user.setName("Дмитрий");
         controller.addUser(user);
-        User user2 = new User("name@mail.ru", "Aarrgg", LocalDate.of(1995, 4, 5));
+        User user2 = new User("Aarrgg", "name@mail.ru", LocalDate.of(1995, 4, 5));
         user2.setId(1);
         controller.updateUser(user2);
         assertEquals("Aarrgg", controller.getUsers().get(0).getLogin(), "Пользователь не обновлен");
@@ -116,10 +116,10 @@ class FilmorateApplicationTests {
     void UpdateUserNotUsingId() throws ValidationException {
 
         UserController controller = new UserController();
-        User user = new User("name@mail.ru", "Zzerrgg", LocalDate.of(1990, 3, 30));
+        User user = new User("Zzerrgg", "name@mail.ru", LocalDate.of(1990, 3, 30));
         user.setName("Дмитрий");
         controller.addUser(user);
-        User user2 = new User("name@mail.ru", "Bberrgen", LocalDate.of(2000, 5, 15));
+        User user2 = new User("Bberrgen", "name@mail.ru", LocalDate.of(2000, 5, 15));
         assertThrows(ValidationException.class, () -> controller.updateUser(user2));
     }
 
@@ -127,10 +127,10 @@ class FilmorateApplicationTests {
     void IncorrectUpdateUser() throws ValidationException {
 
         UserController controller = new UserController();
-        User user = new User("name@mail.ru", "Zzerrgg", LocalDate.of(1990, 3, 30));
+        User user = new User("Zzerrgg", "name@mail.ru", LocalDate.of(1990, 3, 30));
         user.setName("Дмитрий");
         controller.addUser(user);
-        User user2 = new User("name@mail.ru", "Bberrgen", LocalDate.of(2005, 6, 25));
+        User user2 = new User("Bberrgen", "name@mail.ru", LocalDate.of(2005, 6, 25));
         user2.setId(100);
         assertThrows(ValidationException.class, () -> controller.updateUser(user2));
     }
