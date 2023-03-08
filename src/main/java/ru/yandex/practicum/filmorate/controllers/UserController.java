@@ -6,7 +6,6 @@ import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 
 import javax.validation.Valid;
-
 import java.util.*;
 
 @Slf4j
@@ -22,9 +21,9 @@ public class UserController {
     }
 
     @PostMapping
-    public User addUser(@Valid @RequestBody User user) throws ValidationException {
+    public User add(@Valid @RequestBody User user) {
         log.debug("POST на создание пользователя: {}", user);
-        validatorUser(user);
+        validator(user);
         checkUserName(user);
         user.setId(idGenerator());
         usersHashMap.put(user.getId(), user);
@@ -33,9 +32,9 @@ public class UserController {
     }
 
     @PutMapping
-    public User updateUser(@Valid @RequestBody User user) throws ValidationException {
+    public User update(@Valid @RequestBody User user) {
         log.debug("PUT на обновление пользователя: {}", user);
-        validatorUser(user);
+        validator(user);
         if (!usersHashMap.containsKey(user.getId())) {
             log.error("Пользователь отсутствует в списке: {}", user);
             throw new ValidationException("несуществующий id");
@@ -47,7 +46,7 @@ public class UserController {
     }
 
     @GetMapping
-    public List<User> getUsers() {
+    public List<User> get() {
         log.info("GET на получение списка пользователей");
         if (!usersHashMap.isEmpty()) {
             return new ArrayList<>(usersHashMap.values());
@@ -55,7 +54,7 @@ public class UserController {
         return Collections.emptyList();
     }
 
-    private void validatorUser(User user) throws ValidationException {
+    private void validator(User user) {
         if (user.getLogin().contains(" ")) {
             log.warn("Логин не должен содержать пробелы");
             throw new ValidationException("Логин содержит пробельные символы");
