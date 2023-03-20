@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.annotation.JacksonStdImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import ru.yandex.practicum.filmorate.exception.FilmNotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.service.FilmService;
@@ -51,21 +52,21 @@ class FilmControllerTest {
     }
 
     @Test
-    void UpdateFilmNotUsingId() throws ValidationException {
+    void UpdateFilmNotUsingId() throws FilmNotFoundException {
 
         Film film = new Film("Фильм", "Описание фильма", LocalDate.of(1895, 12, 30), 120);
         controller.add(film);
         Film film2 = new Film("Фильм", "Описание фильма", LocalDate.of(1999, 11, 10), 130);
-        assertThrows(ValidationException.class, () -> controller.update(film2));
+        assertThrows(FilmNotFoundException.class, () -> controller.update(film2));
     }
 
     @Test
-    void IncorrectUpdateFilm() throws ValidationException {
+    void IncorrectUpdateFilm() throws FilmNotFoundException {
 
         Film film = new Film("Фильм", "Описание фильма", LocalDate.of(1895, 12, 30), 120);
         controller.add(film);
         Film film2 = new Film("Фильм", "Описание фильма", LocalDate.of(1900, 10, 10), 120);
         film2.setId(100);
-        assertThrows(ValidationException.class, () -> controller.update(film2));
+        assertThrows(FilmNotFoundException.class, () -> controller.update(film2));
     }
 }

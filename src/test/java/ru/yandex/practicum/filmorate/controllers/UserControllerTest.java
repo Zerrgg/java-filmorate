@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.annotation.JacksonStdImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import ru.yandex.practicum.filmorate.exception.UserNotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.UserService;
@@ -63,24 +64,24 @@ class UserControllerTest {
     }
 
     @Test
-    void UpdateUserNotUsingId() throws ValidationException {
+    void UpdateUserNotUsingId() throws UserNotFoundException {
 
         User user = new User("Zzerrgg", "name@mail.ru", LocalDate.of(1990, 3, 30));
         user.setName("Дмитрий");
         controller.add(user);
         User user2 = new User("Bberrgen", "name@mail.ru", LocalDate.of(2000, 5, 15));
-        assertThrows(ValidationException.class, () -> controller.update(user2));
+        assertThrows(UserNotFoundException.class, () -> controller.update(user2));
     }
 
     @Test
-    void IncorrectUpdateUser() throws ValidationException {
+    void IncorrectUpdateUser() throws UserNotFoundException {
 
         User user = new User("Zzerrgg", "name@mail.ru", LocalDate.of(1990, 3, 30));
         user.setName("Дмитрий");
         controller.add(user);
         User user2 = new User("Bberrgen", "name@mail.ru", LocalDate.of(2005, 6, 25));
         user2.setId(100);
-        assertThrows(ValidationException.class, () -> controller.update(user2));
+        assertThrows(UserNotFoundException.class, () -> controller.update(user2));
     }
 
 }
