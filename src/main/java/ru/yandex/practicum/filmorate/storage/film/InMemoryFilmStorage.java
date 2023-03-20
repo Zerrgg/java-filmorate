@@ -15,8 +15,8 @@ import java.util.stream.Collectors;
 public class InMemoryFilmStorage implements FilmStorage {
 
     private static final LocalDate BOUNDARY_DATE = LocalDate.of(1895, 12, 25);
-    private long id;
     private final Map<Long, Film> filmHashMap = new HashMap<>();
+    private long id;
 
     private long idGenerator() {
         return ++id;

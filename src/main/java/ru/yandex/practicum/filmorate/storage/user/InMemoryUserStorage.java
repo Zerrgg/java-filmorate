@@ -13,8 +13,8 @@ import java.util.stream.Collectors;
 @Component
 public class InMemoryUserStorage implements UserStorage {
 
-    private int id;
     private final Map<Long, User> userHashMap = new HashMap<>();
+    private int id;
 
     private int idGenerator() {
         return ++id;
@@ -40,6 +40,7 @@ public class InMemoryUserStorage implements UserStorage {
             throw new UserNotFoundException("Пользователь с таким id не найден");
         }
     }
+
     @Override
     public User add(User user) {
         validator(user);
