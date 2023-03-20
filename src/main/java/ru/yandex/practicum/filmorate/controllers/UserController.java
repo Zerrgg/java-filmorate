@@ -26,7 +26,7 @@ public class UserController {
         return userService.add(user);
     }
 
-    @PutMapping("/users/{id}/friends/{friendId}")
+    @PutMapping("/{id}/friends/{friendId}")
     public List<Long> addFriend(@PathVariable long id, @PathVariable long friendId) {
         log.info("PUT запрос на добавление в друзья");
         return userService.addFriend(id, friendId);
@@ -38,19 +38,19 @@ public class UserController {
         return userService.getAll();
     }
 
-    @GetMapping("/users/{id}")
+    @GetMapping("/{id}")
     public User get(@PathVariable long id) {
         log.info("GET запрос на получение пользователя");
         return userService.get(id);
     }
 
-    @GetMapping("/users/{id}/friends")
+    @GetMapping("/{id}/friends")
     public List<User> getUserFriends(@PathVariable long id) {
         log.info("GET запрос на получение списка друзей");
         return userService.getUserFriends(id);
     }
 
-    @GetMapping("/users/{id}/friends/common/{otherId}")
+    @GetMapping("/{id}/friends/common/{otherId}")
     public List<User> getMutualUsersFriends(@PathVariable long id, @PathVariable long otherId) {
         log.info("GET запрос на получение списка общих друзей");
         return userService.getMutualFriends(id, otherId);
@@ -62,7 +62,7 @@ public class UserController {
         return userService.update(user);
     }
 
-    @DeleteMapping("/users/{id}/friends/{friendId}")
+    @DeleteMapping("/{id}/friends/{friendId}")
     public List<Long> deleteFriend(@PathVariable long id, @PathVariable long friendId) {
         log.info("DELETE запрос на удаление из друзей");
         return userService.deleteFriend(id, friendId);
