@@ -1,9 +1,10 @@
 package ru.yandex.practicum.filmorate.controllers;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.service.UserService;
 
 import javax.validation.Valid;
 import java.util.*;
@@ -12,60 +13,58 @@ import java.util.*;
 @RestController
 @RequestMapping("/users")
 public class UserController {
-
-    private final Map<Integer, User> usersHashMap = new HashMap<>();
-    private int id;
-
-    private int idGenerator() {
-        return ++id;
+    private final UserService userService;
+    @Autowired
+    public UserController(UserService userService) {
+        this.userService = userService;
     }
 
     @PostMapping
     public User add(@Valid @RequestBody User user) {
-        log.debug("POST на создание пользователя: {}", user);
-        validator(user);
-        checkUserName(user);
-        user.setId(idGenerator());
-        usersHashMap.put(user.getId(), user);
-        log.info("POST запрос выполнен");
-        return user;
+        log.info("POST запрос на создание пользователя");
+        return userService.add(user);
+    }
+
+    @PutMapping("/users/{id}/friends/{friendId}")
+    public List<Long> addFriend(@PathVariable long id, @PathVariable long friendId) {
+        log.info("PUT запрос на добавление в друзья");
+        return userService.addFriend(id, friendId);
+    }
+
+    @GetMapping
+    public List<User> getAll() {
+        log.info("GET запрос на получение списка всех пользователей");
+        return userService.getAll();
+    }
+
+    @GetMapping("/users/{id}")
+    public User get(@PathVariable long id) {
+        log.info("GET запрос на получение пользователя");
+        return userService.get(id);
+    }
+
+    @GetMapping("/users/{id}/friends")
+    public List<User> getUserFriends(@PathVariable long id) {
+        log.info("GET запрос на получение списка друзей");
+        return userService.getUserFriends(id);
+    }
+
+    @GetMapping("/users/{id}/friends/common/{otherId}")
+    public List<User> getMutualUsersFriends(@PathVariable long id, @PathVariable long otherId) {
+        log.info("GET запрос на получение списка общих друзей");
+        return userService.getMutualFriends(id, otherId);
     }
 
     @PutMapping
     public User update(@Valid @RequestBody User user) {
-        log.debug("PUT на обновление пользователя: {}", user);
-        validator(user);
-        if (!usersHashMap.containsKey(user.getId())) {
-            log.error("Пользователь отсутствует в списке: {}", user);
-            throw new ValidationException("несуществующий id");
-        }
-        checkUserName(user);
-        usersHashMap.put(user.getId(), user);
-        log.info("PUT запрос выполнен");
-        return user;
+        log.info("PUT запрос на обновление пользователя");
+        return userService.update(user);
     }
 
-    @GetMapping
-    public List<User> get() {
-        log.info("GET на получение списка пользователей");
-        if (!usersHashMap.isEmpty()) {
-            return new ArrayList<>(usersHashMap.values());
-        }
-        return Collections.emptyList();
-    }
-
-    private void validator(User user) {
-        if (user.getLogin().contains(" ")) {
-            log.warn("Логин не должен содержать пробелы");
-            throw new ValidationException("Логин содержит пробельные символы");
-        }
-    }
-
-    private void checkUserName(User user) {
-        if (user.getName() == null || user.getName().isBlank()) {
-            log.debug("Не указано имя пользователя");
-            user.setName(user.getLogin());
-        }
+    @DeleteMapping("/users/{id}/friends/{friendId}")
+    public List<Long> deleteFriend(@PathVariable long id, @PathVariable long friendId) {
+        log.info("DELETE запрос на удаление из друзей");
+        return userService.deleteFriend(id, friendId);
     }
 
 }
