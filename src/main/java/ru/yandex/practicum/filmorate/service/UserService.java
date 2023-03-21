@@ -1,7 +1,7 @@
 package ru.yandex.practicum.filmorate.service;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.UserNotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
@@ -13,19 +13,15 @@ import java.util.Set;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class UserService {
     private final UserStorage userStorage;
-
-    @Autowired
-    public UserService(UserStorage userStorage) {
-        this.userStorage = userStorage;
-    }
 
     public User add(User user) {
         return userStorage.add(user);
     }
 
-    public List<Long> addFriend(long idUser, long idUserFriend) {
+    public void addFriend(long idUser, long idUserFriend) {
         User user = userStorage.get(idUser);
         User userFriend = userStorage.get(idUserFriend);
         if (!user.getFriendsId().contains(idUserFriend)) {
@@ -35,7 +31,6 @@ public class UserService {
         } else {
             throw new UserNotFoundException("Пользователь уже в друзьях");
         }
-        return new ArrayList<>(user.getFriendsId());
     }
 
     public List<User> getAll() {
@@ -71,13 +66,12 @@ public class UserService {
         return userStorage.update(user);
     }
 
-    public List<Long> deleteFriend(long idUser, long idUserFriend) {
+    public void deleteFriend(long idUser, long idUserFriend) {
         User user = userStorage.get(idUser);
         User userFriend = userStorage.get(idUserFriend);
         user.getFriendsId().remove(idUserFriend);
         userFriend.getFriendsId().remove(idUser);
         log.info("DELETE запрос на удаление друга обработан.");
-        return new ArrayList<>(user.getFriendsId());
     }
 
 }

@@ -60,25 +60,16 @@ public class InMemoryUserStorage implements UserStorage {
 
     @Override
     public List<User> getAll() {
-        if (!userHashMap.isEmpty()) {
-            return new ArrayList<>(userHashMap.values());
-        } else {
-            return Collections.emptyList();
-        }
+        return new ArrayList<>(userHashMap.values());
     }
 
     @Override
     public List<User> getFriends(long id) {
         checkUserId(id);
-        if (!userHashMap.get(id).getFriendsId().isEmpty()) {
-            log.info("GET запрос на получение списка друзей пользователя обработан.");
-            return userHashMap.get(id).getFriendsId().stream()
-                    .map(userHashMap::get)
-                    .collect(Collectors.toList());
-        } else {
-            log.info("GET запрос на получение списка друзей пользователя обработан. Список пуст");
-            return Collections.emptyList();
-        }
+        log.info("GET запрос на получение списка друзей пользователя обработан.");
+        return userHashMap.get(id).getFriendsId().stream()
+                .map(userHashMap::get)
+                .collect(Collectors.toList());
     }
 
     @Override

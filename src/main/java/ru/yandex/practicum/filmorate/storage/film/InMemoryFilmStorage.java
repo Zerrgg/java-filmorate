@@ -71,7 +71,7 @@ public class InMemoryFilmStorage implements FilmStorage {
         } else {
             log.info("GET запрос на популярные фильмы обработан.");
             return getAll().stream()
-                    .sorted((s1, s2) -> Integer.compare(s2.getLikes(), s1.getLikes()))
+                    .sorted((s1, s2) -> Integer.compare(s2.getUsersIdWhoLiked().size(), s1.getUsersIdWhoLiked().size()))
                     .limit(count)
                     .collect(Collectors.toList());
         }
@@ -82,8 +82,6 @@ public class InMemoryFilmStorage implements FilmStorage {
         validator(film);
         checkId(film.getId());
         Film updatedFilm = filmHashMap.get(film.getId());
-        int updatedFilmLikes = updatedFilm.getLikes();
-        film.setLikes(updatedFilmLikes);
         Set<Long> updatedFilmLikedUsersId = updatedFilm.getUsersIdWhoLiked();
         film.setUsersIdWhoLiked(updatedFilmLikedUsersId);
         filmHashMap.put(film.getId(), film);
