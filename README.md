@@ -1,4 +1,4 @@
 # java-filmorate
 Template repository for Filmorate project.
 
-![alt text](https://github.com/Zerrgg/java-filmorate/blob/add-friends-likes/src/main/resources/filmorate2-public.PNG?raw=true)
+![filmorate2 - public.png](src%2Fmain%2Fresources%2Ffilmorate2%20-%20public.png)
