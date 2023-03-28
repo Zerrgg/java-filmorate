@@ -1,4 +1,4 @@
 # java-filmorate
 Template repository for Filmorate project.
 
-![ER_DIAGRAM](assets/resources/filmorate2-public.png)
+![filmorate2 - public.png](src%2Fmain%2Fresources%2Ffilmorate2%20-%20public.png)
