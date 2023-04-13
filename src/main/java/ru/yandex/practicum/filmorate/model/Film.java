@@ -7,21 +7,42 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
 @Data
 public class Film {
 
     @NotBlank
-    private final String name;
+    private String name;
     @Size(max = 200)
-    private final String description;
+    private String description;
     @NotNull
-    private final LocalDate releaseDate;
+    private LocalDate releaseDate;
     @Positive
-    private final int duration;
-    private long id;
-    private Set<Long> usersIdWhoLiked = new HashSet<>();
+    private int duration;
+    private long filmId;
+    @NotNull
+    private Mpa mpa;
+    private List<Genre> genres;
+
+    public Film() {
+    }
+
+    public Film(String name, String description, LocalDate releaseDate, int duration, Mpa mpa, List<Genre> genres) {
+        this.name = name;
+        this.description = description;
+        this.releaseDate = releaseDate;
+        this.duration = duration;
+        this.mpa = mpa;
+        this.genres = genres;
+    }
+
+    public Film(String name, String description, LocalDate releaseDate, int duration, List<Genre> genres) {
+        this.name = name;
+        this.description = description;
+        this.releaseDate = releaseDate;
+        this.duration = duration;
+        this.genres = genres;
+    }
 
 }
