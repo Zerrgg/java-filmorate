@@ -43,6 +43,9 @@ public class FilmImpl implements FilmDao {
                 .withTableName("films")
                 .usingGeneratedKeyColumns("film_id");
         film.setId(simpleJdbcInsert.executeAndReturnKey(film.toMap()).longValue());
+        genreDao.delete(film.getId());
+        List<Genre> filmGenres = genreDao.add(film.getId(), film.getGenres());
+        film.setGenres(filmGenres);
         return film;
     }
 
