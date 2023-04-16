@@ -16,7 +16,6 @@ import ru.yandex.practicum.filmorate.model.Genre;
 
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import java.time.LocalDate;
-import java.util.HashSet;
 import java.util.List;
 
 @Slf4j
