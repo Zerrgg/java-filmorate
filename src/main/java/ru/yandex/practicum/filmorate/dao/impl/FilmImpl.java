@@ -10,11 +10,11 @@ import ru.yandex.practicum.filmorate.dao.FilmDao;
 import ru.yandex.practicum.filmorate.dao.GenreDao;
 import ru.yandex.practicum.filmorate.dao.MpaDao;
 import ru.yandex.practicum.filmorate.exception.ObjectNotFoundException;
+import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.mapper.FilmMapper;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
 
-import ru.yandex.practicum.filmorate.exception.ValidationException;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -80,14 +80,6 @@ public class FilmImpl implements FilmDao {
             throw new ValidationException("Ошибка в дате релиза фильма");
         }
     }
-
-//    private void updateGenres(Film film) {
-//        List<Genre> genres = film.getGenres();
-//        if (genres != null) {
-//            String sql = "INSERT INTO film_genre(film_id, genre_id) VALUES (?,?)";
-//            new HashSet<>(genres).forEach(genre -> jdbcTemplate.update(sql, film.getId(), genre.getId()));
-//        }
-//    }
 
     private boolean isExist(long id) {
         SqlRowSet userRows = jdbcTemplate.queryForRowSet("SELECT * FROM films WHERE film_id = ?", id);

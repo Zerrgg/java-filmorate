@@ -5,8 +5,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.dao.FilmDao;
-import ru.yandex.practicum.filmorate.dao.MpaDao;
-import ru.yandex.practicum.filmorate.exception.ObjectNotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 
 import java.util.List;
@@ -16,7 +14,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class FilmService {
     private final FilmDao filmDao;
-    private final MpaDao mpaDao;
 
     public List<Film> getAll() {
         return filmDao.getAll();

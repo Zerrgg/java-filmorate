@@ -4,7 +4,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
-import ru.yandex.practicum.filmorate.dao.*;
+import ru.yandex.practicum.filmorate.dao.GenreDao;
+import ru.yandex.practicum.filmorate.dao.LikeDao;
+import ru.yandex.practicum.filmorate.dao.MpaDao;
 import ru.yandex.practicum.filmorate.mapper.FilmMapper;
 import ru.yandex.practicum.filmorate.model.Film;
 
@@ -18,9 +20,7 @@ import java.util.List;
 public class LikeImpl implements LikeDao {
 
     private final JdbcTemplate jdbcTemplate;
-    private final UserDao userDao;
     private final MpaDao mpaDao;
-    private final FilmDao filmDao;
     private final GenreDao genreDao;
 
     @Override

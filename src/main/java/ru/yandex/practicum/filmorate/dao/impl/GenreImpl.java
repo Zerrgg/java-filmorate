@@ -43,7 +43,7 @@ public class GenreImpl implements GenreDao {
     @Override
     public List<Genre> getGenresListForFilm(long filmId) {
         String sql = "SELECT fg.*, g.genre_name FROM film_genre AS fg JOIN genres AS g ON g.genre_id = fg.genre_id " +
-                        "WHERE fg.film_id = ?";
+                "WHERE fg.film_id = ?";
         return jdbcTemplate.query(sql, genreMapper::mapRow, filmId);
     }
 
