@@ -3,28 +3,39 @@ package ru.yandex.practicum.filmorate.dao.impl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.stereotype.Service;
+import org.springframework.jdbc.support.rowset.SqlRowSet;
+import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.dao.MpaDao;
-import ru.yandex.practicum.filmorate.exception.MpaNotFoundException;
+import ru.yandex.practicum.filmorate.exception.ObjectNotFoundException;
+import ru.yandex.practicum.filmorate.mapper.MpaMapper;
 import ru.yandex.practicum.filmorate.model.Mpa;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Service
+@Repository
 @RequiredArgsConstructor
 public class MpaImpl implements MpaDao {
     private final JdbcTemplate jdbcTemplate;
+    private final MpaMapper mpaMapper;
 
     @Override
-    public Mpa getByID(int mpaId) {
+    public Mpa get(int mpaId) {
+        if (!isExist(mpaId)) {
+            throw new ObjectNotFoundException("рейтинг не найден");
+        }
         String sql = "SELECT* FROM mpa WHERE mpa_id=?";
-        return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Mpa.class), mpaId).stream().findFirst().orElseThrow(() -> new MpaNotFoundException("Рейтинг не найден"));
+        return jdbcTemplate.queryForObject(sql, mpaMapper, mpaId);
     }
 
     @Override
     public List<Mpa> getAll() {
         String sql = "SELECT* FROM mpa";
-        return new ArrayList<>(jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Mpa.class)));
+        return jdbcTemplate.query(sql, mpaMapper);
+    }
+
+    private boolean isExist(int id) {
+        SqlRowSet userRows = jdbcTemplate.queryForRowSet("SELECT * FROM mpa WHERE mpa_id = ?", id);
+        return userRows.next();
     }
 }

@@ -4,6 +4,7 @@ import ru.yandex.practicum.filmorate.model.Film;
 
 import java.util.List;
 
+
 public interface FilmDao {
     List<Film> getAll();
 
@@ -13,9 +14,4 @@ public interface FilmDao {
 
     Film get(long filmId);
 
-    List<Film> getPopularFilms(int count);
-
-    void addLike(long filmId, long userId);
-
-    Film deleteLike(long filmId, long userId);
 }

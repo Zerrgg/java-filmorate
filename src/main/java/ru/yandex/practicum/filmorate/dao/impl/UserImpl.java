@@ -2,88 +2,60 @@ package ru.yandex.practicum.filmorate.dao.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.stereotype.Service;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
+import org.springframework.jdbc.support.rowset.SqlRowSet;
+import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.dao.UserDao;
-import ru.yandex.practicum.filmorate.exception.UserNotFoundException;
-import ru.yandex.practicum.filmorate.exception.ValidationException;
+import ru.yandex.practicum.filmorate.exception.ObjectNotFoundException;
+import ru.yandex.practicum.filmorate.mapper.UserMapper;
 import ru.yandex.practicum.filmorate.model.User;
 
-import java.util.ArrayList;
+import javax.validation.ValidationException;
 import java.util.List;
 
 @Slf4j
-@Service
+@Repository
 @RequiredArgsConstructor
 public class UserImpl implements UserDao {
     private final JdbcTemplate jdbcTemplate;
+    private final UserMapper userMapper;
 
     @Override
     public List<User> getAll() {
         String sql = "SELECT* FROM users";
-        return new ArrayList<>(jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(User.class)));
+        return jdbcTemplate.query(sql, userMapper);
     }
 
     @Override
     public User add(User user) {
         validator(user);
-        check(user);
-        String firstSqlRequest = "INSERT INTO users(user_name, login, email, birthday) VALUES (?,?,?,?)";
-        jdbcTemplate.update(firstSqlRequest, user.getName(), user.getLogin(), user.getEmail(), user.getBirthday());
-        String secondSqlRequest = "SELECT user_id FROM users ORDER BY user_id DESC LIMIT 1";
-        long userId = jdbcTemplate.queryForObject(secondSqlRequest, long.class);
-        return get(userId);
+        SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
+                .withTableName("users")
+                .usingGeneratedKeyColumns("user_id");
+        user.setId(simpleJdbcInsert.executeAndReturnKey(user.toMap()).longValue());
+        return user;
     }
 
     @Override
     public User update(User user) {
         validator(user);
         check(user);
+        if (!isExist(user.getId())) {
+            throw new ObjectNotFoundException("Пользователь не найден");
+        }
         String sql = "UPDATE users SET user_name=?, login=?, email=?, birthday=? WHERE user_id=? ";
-        jdbcTemplate.update(sql, user.getName(), user.getLogin(), user.getEmail(), user.getBirthday(), user.getUserId());
-        return get(user.getUserId());
+        jdbcTemplate.update(sql, user.getName(), user.getLogin(), user.getEmail(), user.getBirthday(), user.getId());
+        return user;
     }
 
     @Override
     public User get(long userId) {
+        if (!isExist(userId)) {
+            throw new ObjectNotFoundException("Пользователь не найден");
+        }
         String sql = "SELECT user_id, user_name, login, email, birthday FROM users WHERE user_id=?";
-        return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(User.class), userId).stream().findAny()
-                .orElseThrow(() -> new UserNotFoundException("Пользователь не найден"));
-    }
-
-    @Override
-    public List<User> getFriend(long userId) {
-        get(userId);
-        String sql = "SELECT user_id, user_name, login, email, birthday FROM users AS u" +
-                "LEFT JOIN friendship AS f ON u.user_id=f.user_id_whom_request_was_sent WHERE f.user_id_who_sent_request=?";
-        return new ArrayList<>(jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(User.class), userId));
-    }
-
-    @Override
-    public void addFriend(long userId, long friendId) {
-        get(userId);
-        get(friendId);
-        String sql = "INSERT INTO friendship(user_id_who_sent_request, user_id_whom_request_was_sent) VALUES (?,?)";
-        jdbcTemplate.update(sql, userId, friendId);
-    }
-
-    @Override
-    public void deleteFriend(long userId, long friendId) {
-        get(userId);
-        get(friendId);
-        String sql = "DELETE FROM friendship WHERE user_id_who_sent_request=? AND user_id_whom_request_was_sent=? ";
-        jdbcTemplate.update(sql, userId, friendId);
-    }
-
-    @Override
-    public List<User> getMutualUsersFriends(long userId, long otherUserId) {
-        get(userId);
-        get(otherUserId);
-        String sql = "SELECT* FROM users WHERE user_id IN(SELECT user_id_whom_request_was_sent" +
-                "WHERE user_id_who_sent_request=? AND user_id_whom_request_was_sent IN" +
-                "(SELECT user_id_whom_request_was_sent FROM friendship WHERE user_id_who_sent_request=?))";
-        return new ArrayList<>(jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(User.class), userId, otherUserId));
+        return jdbcTemplate.queryForObject(sql, userMapper::mapRow, userId);
     }
 
     private void check(User user) {
@@ -98,5 +70,10 @@ public class UserImpl implements UserDao {
             log.warn("Пользователь при создании логина использовал символы пробела");
             throw new ValidationException("Логин содержит символы пробела");
         }
+    }
+
+    private boolean isExist(long id) {
+        SqlRowSet userRows = jdbcTemplate.queryForRowSet("SELECT * FROM users WHERE user_id = ?", id);
+        return userRows.next();
     }
 }

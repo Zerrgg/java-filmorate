@@ -6,9 +6,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import ru.yandex.practicum.filmorate.dao.GenreDao;
 import ru.yandex.practicum.filmorate.model.Genre;
-
+import ru.yandex.practicum.filmorate.services.GenreService;
 import java.util.List;
 
 @Slf4j
@@ -16,17 +15,18 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/genres")
 public class GenreController {
-    private final GenreDao genreDao;
+
+    private final GenreService genreService;
 
     @GetMapping
     public List<Genre> getAll() {
         log.info("GET запрос на получение всех жанров");
-        return genreDao.getAll();
+        return genreService.getAll();
     }
 
     @GetMapping("/{id}")
-    public Genre getByID(@PathVariable int genreId) {
+    public Genre get(@PathVariable int id) {
         log.info("GET запрос на получение жанра");
-        return genreDao.getByID(genreId);
+        return genreService.get(id);
     }
 }
