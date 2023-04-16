@@ -13,4 +13,5 @@ public interface FriendDao {
     void delete(long userId, long friendId);
 
     List<User> getMutualUsersFriends(long userId, long otherUserId);
+
 }

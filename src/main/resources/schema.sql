@@ -1,16 +1,16 @@
---drop table IF EXISTS film_genre;
---
---drop table IF EXISTS  genres;
---
---drop table  IF EXISTS movie_likes;
---
---drop table  IF EXISTS films;
---
-----drop table  IF EXISTS mpa;
---
---drop table IF EXISTS friendship;
---
---drop table  IF EXISTS users;
+drop table IF EXISTS film_genre;
+
+drop table IF EXISTS  genres;
+
+drop table  IF EXISTS movie_likes;
+
+drop table  IF EXISTS films;
+
+drop table  IF EXISTS mpa;
+
+drop table IF EXISTS friendship;
+
+drop table  IF EXISTS users;
 
 create table IF NOT EXISTS mpa
 (

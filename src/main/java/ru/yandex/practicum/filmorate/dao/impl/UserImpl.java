@@ -18,12 +18,14 @@ import java.util.List;
 @Repository
 @RequiredArgsConstructor
 public class UserImpl implements UserDao {
+
     private final JdbcTemplate jdbcTemplate;
     private final UserMapper userMapper;
 
     @Override
     public List<User> getAll() {
-        String sql = "SELECT* FROM users";
+        String sql = "SELECT*\n" +
+                "FROM users";
         return jdbcTemplate.query(sql, userMapper);
     }
 
@@ -55,7 +57,7 @@ public class UserImpl implements UserDao {
             throw new ObjectNotFoundException("Пользователь не найден");
         }
         String sql = "SELECT user_id, user_name, login, email, birthday FROM users WHERE user_id=?";
-        return jdbcTemplate.queryForObject(sql, userMapper::mapRow, userId);
+        return jdbcTemplate.queryForObject(sql, userMapper, userId);
     }
 
     private void check(User user) {
@@ -73,7 +75,8 @@ public class UserImpl implements UserDao {
     }
 
     private boolean isExist(long id) {
-        SqlRowSet userRows = jdbcTemplate.queryForRowSet("SELECT * FROM users WHERE user_id = ?", id);
+        SqlRowSet userRows = jdbcTemplate.queryForRowSet("SELECT* FROM users WHERE user_id = ?", id);
         return userRows.next();
     }
+
 }

@@ -10,6 +10,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class GenreService {
+
     private final GenreDao genreDao;
 
     public Genre get(int id) {
@@ -19,4 +20,5 @@ public class GenreService {
     public List<Genre> getAll() {
         return genreDao.getAll();
     }
+
 }

@@ -22,19 +22,19 @@ import java.util.List;
 @Repository
 @RequiredArgsConstructor
 public class FilmImpl implements FilmDao {
+
     private static final LocalDate BOUNDARY_DATE = LocalDate.of(1895, 12, 25);
     private final JdbcTemplate jdbcTemplate;
     private final MpaDao mpaDao;
     private final GenreDao genreDao;
     private final FilmMapper filmMapper;
 
-
     @Override
     public List<Film> getAll() {
-        String sql = "SELECT * FROM films";
+        String sql = "SELECT*\n" +
+                "FROM films";
         return jdbcTemplate.query(sql, filmMapper);
     }
-
 
     @Override
     public Film add(Film film) {
@@ -55,7 +55,8 @@ public class FilmImpl implements FilmDao {
         if (!isExist(film.getId())) {
             throw new ObjectNotFoundException("Фильм не найден");
         }
-        String sql = "UPDATE films SET film_title=?, description=?, duration=?, release_date=?,mpa_id=? WHERE film_id=? ";
+        String sql = "UPDATE films SET film_title=?, description=?, duration=?, release_date=?,mpa_id=?\n" +
+                "WHERE film_id=? ";
         jdbcTemplate.update(sql,
                 film.getName(),
                 film.getDescription(),
@@ -72,7 +73,9 @@ public class FilmImpl implements FilmDao {
 
     @Override
     public Film get(long filmId) {
-        String sql = "SELECT* FROM films WHERE film_id=?";
+        String sql = "SELECT*\n" +
+                "FROM films\n" +
+                "WHERE film_id=?";
         return jdbcTemplate.query(sql, new FilmMapper(mpaDao, genreDao), filmId).stream().findFirst()
                 .orElseThrow(() -> new ObjectNotFoundException("Фильм не найден"));
     }
@@ -85,7 +88,8 @@ public class FilmImpl implements FilmDao {
     }
 
     private boolean isExist(long id) {
-        SqlRowSet userRows = jdbcTemplate.queryForRowSet("SELECT * FROM films WHERE film_id = ?", id);
+        SqlRowSet userRows = jdbcTemplate.queryForRowSet("SELECT* FROM films WHERE film_id = ?", id);
         return userRows.next();
     }
+
 }

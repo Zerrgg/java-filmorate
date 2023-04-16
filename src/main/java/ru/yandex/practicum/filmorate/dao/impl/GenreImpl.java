@@ -24,27 +24,31 @@ public class GenreImpl implements GenreDao {
         if (!isExist(genreId)) {
             throw new ObjectNotFoundException("Жанр не найден");
         }
-        String sql = "SELECT* FROM genres WHERE genre_id=?";
-        return jdbcTemplate.queryForObject(sql, genreMapper::mapRow, genreId);
+        String sql = "SELECT*\n" +
+                "FROM genres WHERE genre_id=?";
+        return jdbcTemplate.queryForObject(sql, genreMapper, genreId);
     }
 
     @Override
     public List<Genre> getAll() {
-        String sql = "SELECT* FROM genres";
+        String sql = "SELECT*\n" +
+                "FROM genres";
         return jdbcTemplate.query(sql, genreMapper);
     }
 
     @Override
     public void delete(long filmId) {
-        String sql = "DELETE FROM film_genre WHERE film_id = ?";
+        String sql = "DELETE FROM film_genre\n" +
+                "WHERE film_id = ?";
         jdbcTemplate.update(sql, filmId);
     }
 
     @Override
     public List<Genre> getGenresListForFilm(long filmId) {
-        String sql = "SELECT fg.*, g.genre_name FROM film_genre AS fg JOIN genres AS g ON g.genre_id = fg.genre_id " +
+        String sql = "SELECT fg.*, g.genre_name\n" +
+                "FROM film_genre AS fg JOIN genres AS g ON g.genre_id = fg.genre_id\n" +
                 "WHERE fg.film_id = ?";
-        return jdbcTemplate.query(sql, genreMapper::mapRow, filmId);
+        return jdbcTemplate.query(sql, genreMapper, filmId);
     }
 
     @Override
@@ -60,7 +64,7 @@ public class GenreImpl implements GenreDao {
     }
 
     private boolean isExist(int id) {
-        SqlRowSet userRows = jdbcTemplate.queryForRowSet("SELECT * FROM genres WHERE genre_id = ?", id);
+        SqlRowSet userRows = jdbcTemplate.queryForRowSet("SELECT* FROM genres WHERE genre_id = ?", id);
         return userRows.next();
     }
 

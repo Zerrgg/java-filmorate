@@ -18,7 +18,6 @@ public class FriendService {
         return friendDao.get(id);
     }
 
-
     public void add(long userId, long userFriendId) {
         if (userFriendId <= 0 || userId <= 0) {
             throw new ObjectNotFoundException("Пользователь не найден");
@@ -26,13 +25,12 @@ public class FriendService {
         friendDao.add(userId, userFriendId);
     }
 
-
     public void delete(long userId, long userFriendId) {
         friendDao.delete(userId, userFriendId);
     }
 
-
     public List<User> getMutualUsersFriends(long userId, long otherUserId) {
         return friendDao.getMutualUsersFriends(userId, otherUserId);
     }
+
 }

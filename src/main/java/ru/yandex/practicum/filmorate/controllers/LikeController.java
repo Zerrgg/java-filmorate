@@ -33,4 +33,5 @@ public class LikeController {
         log.info("DELETE запрос на удаление лайка");
         likeService.delete(id, userId);
     }
+
 }

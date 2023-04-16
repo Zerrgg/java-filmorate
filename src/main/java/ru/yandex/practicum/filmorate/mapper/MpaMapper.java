@@ -15,4 +15,5 @@ public class MpaMapper implements RowMapper<Mpa> {
         return new Mpa(rs.getInt("mpa_id"),
                 rs.getString("mpa_name"));
     }
+
 }

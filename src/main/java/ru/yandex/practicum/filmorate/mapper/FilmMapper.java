@@ -33,4 +33,5 @@ public class FilmMapper implements RowMapper<Film> {
 
         return rs.wasNull() ? null : new Film(id, name, description, duration, releaseDate, mpa, genres);
     }
+
 }

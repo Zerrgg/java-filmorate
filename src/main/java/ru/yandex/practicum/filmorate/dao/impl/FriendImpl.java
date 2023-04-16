@@ -26,8 +26,12 @@ public class FriendImpl implements FriendDao {
         if (!isExist(id)) {
             throw new ObjectNotFoundException("Пользователь не найден");
         }
-        String sql = "SELECT * FROM users WHERE user_id IN (SELECT user_id_whom_request_was_sent FROM friendship WHERE user_id_who_sent_request =?)";
-        return jdbcTemplate.query(sql, userMapper::mapRow, id);
+        String sql = "SELECT*\n" +
+                "FROM users\n" +
+                "WHERE user_id IN (SELECT user_id_whom_request_was_sent\n" +
+                "FROM friendship\n" +
+                "WHERE user_id_who_sent_request =?)";
+        return jdbcTemplate.query(sql, userMapper, id);
     }
 
     @Override
@@ -38,7 +42,8 @@ public class FriendImpl implements FriendDao {
 
     @Override
     public void delete(long userId, long friendId) {
-        String sql = "DELETE FROM friendship WHERE user_id_who_sent_request=? AND user_id_whom_request_was_sent=? ";
+        String sql = "DELETE FROM friendship\n" +
+                "WHERE user_id_who_sent_request=? AND user_id_whom_request_was_sent=? ";
         jdbcTemplate.update(sql, userId, friendId);
     }
 
@@ -57,7 +62,7 @@ public class FriendImpl implements FriendDao {
     }
 
     private boolean isExist(long id) {
-        SqlRowSet userRows = jdbcTemplate.queryForRowSet("SELECT * FROM users WHERE user_id = ?", id);
+        SqlRowSet userRows = jdbcTemplate.queryForRowSet("SELECT* FROM users WHERE user_id = ?", id);
         return userRows.next();
     }
 

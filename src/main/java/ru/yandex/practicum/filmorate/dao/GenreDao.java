@@ -15,4 +15,5 @@ public interface GenreDao {
     List<Genre> add(long filmId, List<Genre> genres);
 
     void delete(long filmId);
+
 }

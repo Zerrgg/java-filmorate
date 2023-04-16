@@ -30,4 +30,5 @@ public class GenreController {
         log.info("GET запрос на получение жанра");
         return genreService.get(id);
     }
+
 }

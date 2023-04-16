@@ -10,6 +10,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class MpaService {
+
     private final MpaDao mpaDao;
 
     public Mpa get(int id) {
@@ -19,4 +20,5 @@ public class MpaService {
     public List<Mpa> getAll() {
         return mpaDao.getAll();
     }
+
 }

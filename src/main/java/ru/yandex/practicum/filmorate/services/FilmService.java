@@ -13,6 +13,7 @@ import java.util.List;
 @Qualifier
 @RequiredArgsConstructor
 public class FilmService {
+
     private final FilmDao filmDao;
 
     public List<Film> getAll() {
@@ -26,7 +27,6 @@ public class FilmService {
     public Film update(Film film) {
         return filmDao.update(film);
     }
-
 
     public Film get(long filmId) {
         return filmDao.get(filmId);

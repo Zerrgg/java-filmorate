@@ -39,4 +39,5 @@ public class FriendController {
         log.info("DELETE запрос на удаление из друзей");
         friendService.delete(id, friendId);
     }
+
 }

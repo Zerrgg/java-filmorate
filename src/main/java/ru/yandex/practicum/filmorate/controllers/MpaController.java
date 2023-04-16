@@ -30,4 +30,5 @@ public class MpaController {
         log.info("GET запрос на получение рейтинга");
         return mpaService.get(id);
     }
+
 }

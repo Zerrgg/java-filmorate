@@ -12,22 +12,20 @@ import java.util.List;
 @Qualifier
 @RequiredArgsConstructor
 public class UserService {
+
     private final UserDao userDao;
 
     public List<User> getAll() {
         return userDao.getAll();
     }
 
-
     public User add(User user) {
         return userDao.add(user);
     }
 
-
     public User update(User user) {
         return userDao.update(user);
     }
-
 
     public User get(long id) {
         return userDao.get(id);
