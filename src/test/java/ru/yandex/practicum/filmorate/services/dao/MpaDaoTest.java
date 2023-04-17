@@ -18,11 +18,11 @@ import static org.hamcrest.CoreMatchers.is;
 @AutoConfigureTestDatabase
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
-public class MpaDaoTest {
+class MpaDaoTest {
     private final MpaService mpaService;
 
     @Test
-    public void testGetAll() {
+    void testGetAll() {
         List<Mpa> ratingList = mpaService.getAll();
 
         check(ratingList.get(0));
@@ -33,7 +33,7 @@ public class MpaDaoTest {
     }
 
     @Test
-    public void testGet() {
+    void testGet() {
         check(mpaService.get(1));
     }
 

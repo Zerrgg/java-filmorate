@@ -1,14 +1,15 @@
 package ru.yandex.practicum.filmorate.dao.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.dao.GenreDao;
-import ru.yandex.practicum.filmorate.exception.ObjectNotFoundException;
 import ru.yandex.practicum.filmorate.mapper.GenreMapper;
 import ru.yandex.practicum.filmorate.model.Genre;
 
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,9 +22,6 @@ public class GenreImpl implements GenreDao {
 
     @Override
     public Genre get(int genreId) {
-        if (!isExist(genreId)) {
-            throw new ObjectNotFoundException("Жанр не найден");
-        }
         String sql = "SELECT*\n" +
                 "FROM genres WHERE genre_id=?";
         return jdbcTemplate.queryForObject(sql, genreMapper, genreId);
@@ -57,15 +55,18 @@ public class GenreImpl implements GenreDao {
         if (genres == null || genres.isEmpty()) {
             return new ArrayList<>();
         }
-        for (Genre genre : genres) {
-            jdbcTemplate.update(sql, filmId, genre.getId());
-        }
+        jdbcTemplate.batchUpdate(sql, new BatchPreparedStatementSetter() {
+            @Override
+            public void setValues(PreparedStatement ps, int i) throws SQLException {
+                ps.setLong(1, filmId);
+                ps.setLong(2, genres.get(i).getId());
+            }
+
+            @Override
+            public int getBatchSize() {
+                return genres.size();
+            }
+        });
         return getGenresListForFilm(filmId);
     }
-
-    private boolean isExist(int id) {
-        SqlRowSet userRows = jdbcTemplate.queryForRowSet("SELECT* FROM genres WHERE genre_id = ?", id);
-        return userRows.next();
-    }
-
 }

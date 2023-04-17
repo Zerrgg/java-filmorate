@@ -2,10 +2,8 @@ package ru.yandex.practicum.filmorate.dao.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.dao.MpaDao;
-import ru.yandex.practicum.filmorate.exception.ObjectNotFoundException;
 import ru.yandex.practicum.filmorate.mapper.MpaMapper;
 import ru.yandex.practicum.filmorate.model.Mpa;
 
@@ -20,9 +18,6 @@ public class MpaImpl implements MpaDao {
 
     @Override
     public Mpa get(int mpaId) {
-        if (!isExist(mpaId)) {
-            throw new ObjectNotFoundException("Рейтинг не найден");
-        }
         String sql = "SELECT*\n" +
                 "FROM mpa\n" +
                 "WHERE mpa_id=?";
@@ -35,10 +30,4 @@ public class MpaImpl implements MpaDao {
                 "FROM mpa";
         return jdbcTemplate.query(sql, mpaMapper);
     }
-
-    private boolean isExist(int id) {
-        SqlRowSet userRows = jdbcTemplate.queryForRowSet("SELECT* FROM mpa WHERE mpa_id = ?", id);
-        return userRows.next();
-    }
-
 }

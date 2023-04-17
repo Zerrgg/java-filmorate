@@ -23,10 +23,10 @@ public class FilmMapper implements RowMapper<Film> {
 
     @Override
     public Film mapRow(ResultSet rs, int rowNum) throws SQLException {
-        Long id = rs.getLong("film_id");
+        long id = rs.getLong("film_id");
         String name = rs.getString("film_title");
         String description = rs.getString("description");
-        Integer duration = rs.getInt("duration");
+        int duration = rs.getInt("duration");
         LocalDate releaseDate = rs.getDate("release_date").toLocalDate();
         Mpa mpa = mpaDao.get(rs.getInt("mpa_id"));
         List<Genre> genres = genreDao.getGenresListForFilm(rs.getInt("film_id"));

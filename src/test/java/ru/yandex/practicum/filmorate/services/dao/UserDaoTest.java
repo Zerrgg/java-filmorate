@@ -18,7 +18,7 @@ import static org.hamcrest.CoreMatchers.is;
 @AutoConfigureTestDatabase
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
-public class UserDaoTest {
+class UserDaoTest {
     private final UserService userService;
 
     private final User user1 = new User(1, "Дима", "Zerg", "Zerg@mail.ru", LocalDate.of(1984, 3, 26));
@@ -26,7 +26,7 @@ public class UserDaoTest {
     private final User user3 = new User(3, "Митяй", "Gudzon", "Gudzon@mail.ru", LocalDate.of(1990, 10, 10));
 
     @Test
-    public void testAdd() {
+    void testAdd() {
         User result1 = userService.add(user1);
         User result2 = userService.add(user2);
         User result3 = userService.add(user3);
@@ -37,7 +37,7 @@ public class UserDaoTest {
     }
 
     @Test
-    public void testUpdate() {
+    void testUpdate() {
         testAdd();
         User updatedUser = user2;
         updatedUser.setName("НовоеИмя");
@@ -48,7 +48,7 @@ public class UserDaoTest {
     }
 
     @Test
-    public void testGet() {
+    void testGet() {
         testAdd();
         User result1 = userService.get(1);
         User result2 = userService.get(2);

@@ -21,5 +21,4 @@ public class UserMapper implements RowMapper<User> {
 
         return rs.wasNull() ? null : new User(id, name, login, email, birthday);
     }
-
 }

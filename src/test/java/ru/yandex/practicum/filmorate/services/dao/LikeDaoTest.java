@@ -25,7 +25,7 @@ import static org.hamcrest.CoreMatchers.is;
 @AutoConfigureTestDatabase
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
-public class LikeDaoTest {
+class LikeDaoTest {
 
     private final FilmService filmService;
     private final UserService userService;
@@ -42,7 +42,7 @@ public class LikeDaoTest {
     private final User user2 = new User(2, "Митя", "JavaMan", "JavaMan@mail.ru", LocalDate.of(1980, 1, 1));
 
     @Test
-    public void testAddLikeFilm() {
+    void testAddLikeFilm() {
         filmService.add(film1);
         filmService.add(film2);
         filmService.add(film3);
@@ -57,7 +57,7 @@ public class LikeDaoTest {
     }
 
     @Test
-    public void testDeleteLikeFilm() {
+    void testDeleteLikeFilm() {
         testAddLikeFilm();
 
         likeService.delete(film3.getId(), user1.getId());
@@ -70,7 +70,7 @@ public class LikeDaoTest {
     }
 
     @Test
-    public void testGetLikedFilmsWithLimit() {
+    void testGetLikedFilmsWithLimit() {
         testAddLikeFilm();
 
         List<Film> result = likeService.getPopularFilms(2);

@@ -1,6 +1,8 @@
 package ru.yandex.practicum.filmorate.services.dao;
 
 import lombok.RequiredArgsConstructor;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -23,7 +25,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 @AutoConfigureTestDatabase
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
-public class FilmDaoTest {
+class FilmDaoTest {
 
     private final FilmService filmService;
 
@@ -39,7 +41,7 @@ public class FilmDaoTest {
     private final User user = new User(1, "Дима", "Zerg", "Zerg@mail.ru", LocalDate.of(1984, 3, 26));
 
     @Test
-    public void testAdd() {
+    void testAdd() {
         Film result1 = filmService.add(film1);
         Film result2 = filmService.add(film2);
         Film result3 = filmService.add(film3);
@@ -50,7 +52,7 @@ public class FilmDaoTest {
     }
 
     @Test
-    public void testUpdate() {
+    void testUpdate() {
         testAdd();
 
         Film updatedFilm = film1;
@@ -61,7 +63,7 @@ public class FilmDaoTest {
     }
 
     @Test
-    public void testGet() {
+    void testGet() {
         testAdd();
 
         check(filmService.get(1), film1);
@@ -70,7 +72,7 @@ public class FilmDaoTest {
     }
 
     @Test
-    public void testGetAll() {
+    void testGetAll() {
         testAdd();
 
         List<Film> result = filmService.getAll();

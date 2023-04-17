@@ -18,11 +18,11 @@ import static org.hamcrest.MatcherAssert.assertThat;
 @AutoConfigureTestDatabase
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
-public class GenreDaoTest {
+class GenreDaoTest {
     private final GenreService genreService;
 
     @Test
-    public void testGetAll() {
+    void testGetAll() {
         List<Genre> genreList = genreService.getAll();
 
         check(genreList.get(0));
@@ -34,7 +34,7 @@ public class GenreDaoTest {
     }
 
     @Test
-    public void testGet() {
+    void testGet() {
         check(genreService.get(1));
     }
 

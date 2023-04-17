@@ -20,7 +20,7 @@ import static org.hamcrest.CoreMatchers.is;
 @AutoConfigureTestDatabase
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
-public class FriendDaoTest {
+class FriendDaoTest {
     private final FriendService friendService;
     private final UserService userService;
     private final User user1 = new User(1, "Дима", "Zerg", "Zerg@mail.ru", LocalDate.of(1984, 3, 26));
@@ -28,7 +28,7 @@ public class FriendDaoTest {
     private final User user3 = new User(3, "Митяй", "Gudzon", "Gudzon@mail.ru", LocalDate.of(1990, 10, 10));
 
     @Test
-    public void testAddUsers() {
+    void testAddUsers() {
         User result1 = userService.add(user1);
         User result2 = userService.add(user2);
         User result3 = userService.add(user3);
@@ -39,7 +39,7 @@ public class FriendDaoTest {
     }
 
     @Test
-    public void testAddFriends() {
+    void testAddFriends() {
         testAddUsers();
         friendService.add(1, 3);
         friendService.add(2, 3);
@@ -48,7 +48,7 @@ public class FriendDaoTest {
     }
 
     @Test
-    public void testGetFriends() {
+    void testGetFriends() {
         testAddFriends();
         List<User> result = friendService.get(1);
         List<User> result2 = friendService.get(2);
@@ -58,7 +58,7 @@ public class FriendDaoTest {
     }
 
     @Test
-    public void testGetMutualUsersFriends() {
+    void testGetMutualUsersFriends() {
         testAddFriends();
         List<User> result = friendService.getMutualUsersFriends(1, 2);
 
@@ -66,7 +66,7 @@ public class FriendDaoTest {
     }
 
     @Test
-    public void testDeleteFriend() {
+    void testDeleteFriend() {
         testAddFriends();
         friendService.delete(1, 3);
         List<User> result = friendService.get(1);

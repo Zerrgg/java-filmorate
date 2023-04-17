@@ -1,19 +1,15 @@
 package ru.yandex.practicum.filmorate.dao.impl;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.dao.FriendDao;
-import ru.yandex.practicum.filmorate.exception.ObjectNotFoundException;
 import ru.yandex.practicum.filmorate.mapper.UserMapper;
 import ru.yandex.practicum.filmorate.model.User;
 
 import java.util.Collections;
 import java.util.List;
 
-@Slf4j
 @Repository
 @RequiredArgsConstructor
 public class FriendImpl implements FriendDao {
@@ -23,9 +19,6 @@ public class FriendImpl implements FriendDao {
 
     @Override
     public List<User> get(long id) {
-        if (!isExist(id)) {
-            throw new ObjectNotFoundException("Пользователь не найден");
-        }
         String sql = "SELECT*\n" +
                 "FROM users\n" +
                 "WHERE user_id IN (SELECT user_id_whom_request_was_sent\n" +
@@ -60,10 +53,4 @@ public class FriendImpl implements FriendDao {
         }
         return resultList;
     }
-
-    private boolean isExist(long id) {
-        SqlRowSet userRows = jdbcTemplate.queryForRowSet("SELECT* FROM users WHERE user_id = ?", id);
-        return userRows.next();
-    }
-
 }
