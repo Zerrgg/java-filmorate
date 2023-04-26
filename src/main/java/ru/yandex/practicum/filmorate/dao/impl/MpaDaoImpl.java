@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.dao.MpaDao;
+import ru.yandex.practicum.filmorate.exception.ObjectNotFoundException;
 import ru.yandex.practicum.filmorate.mapper.MpaMapper;
 import ru.yandex.practicum.filmorate.model.Mpa;
 
@@ -11,17 +12,21 @@ import java.util.List;
 
 @Repository
 @RequiredArgsConstructor
-public class MpaImpl implements MpaDao {
+public class MpaDaoImpl implements MpaDao {
 
     private final JdbcTemplate jdbcTemplate;
     private final MpaMapper mpaMapper;
 
     @Override
     public Mpa get(int mpaId) {
-        String sql = "SELECT*\n" +
-                "FROM mpa\n" +
-                "WHERE mpa_id=?";
-        return jdbcTemplate.queryForObject(sql, mpaMapper, mpaId);
+        try {
+            String sql = "SELECT*\n" +
+                    "FROM mpa\n" +
+                    "WHERE mpa_id=?";
+            return jdbcTemplate.queryForObject(sql, mpaMapper, mpaId);
+        } catch (RuntimeException e) {
+            throw new ObjectNotFoundException("Рейтинг не найден");
+        }
     }
 
     @Override
