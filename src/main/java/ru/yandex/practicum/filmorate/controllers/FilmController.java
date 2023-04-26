@@ -41,4 +41,12 @@ public class FilmController {
         return filmService.update(film);
     }
 
+    @GetMapping("/search")
+    public List<Film> searchFilms(
+            @RequestParam(value = "query", defaultValue = "unknown") String query,
+            @RequestParam(value = "by", defaultValue = "unknown") String by) {
+        log.info("GET запрос на получение списка " +
+                "популярных фильмов расширенного поиска параметрами: QUERY = {}, BY = {}.", query, by);
+        return filmService.searchFilms(query, by);
+    }
 }
