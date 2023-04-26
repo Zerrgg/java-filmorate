@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.dao.FilmDao;
 import ru.yandex.practicum.filmorate.dao.LikeDao;
 import ru.yandex.practicum.filmorate.dao.UserDao;
-import ru.yandex.practicum.filmorate.exception.ObjectNotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 
 import javax.validation.ValidationException;
@@ -26,9 +25,6 @@ public class LikeService {
     public void delete(long filmId, long userId) {
         filmDao.get(filmId);
         userDao.get(userId);
-        if (userId <= 0 || filmId <= 0) {
-            throw new ObjectNotFoundException("Объект не найден");
-        }
         likeDao.delete(filmId, userId);
     }
 
