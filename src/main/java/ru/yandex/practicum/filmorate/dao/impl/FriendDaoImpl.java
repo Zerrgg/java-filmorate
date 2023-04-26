@@ -12,7 +12,7 @@ import java.util.List;
 
 @Repository
 @RequiredArgsConstructor
-public class FriendImpl implements FriendDao {
+public class FriendDaoImpl implements FriendDao {
 
     private final JdbcTemplate jdbcTemplate;
     private final UserMapper userMapper;
