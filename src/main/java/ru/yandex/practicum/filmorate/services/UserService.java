@@ -4,7 +4,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.filmorate.dao.FeedDao;
 import ru.yandex.practicum.filmorate.dao.UserDao;
+import ru.yandex.practicum.filmorate.model.Event;
 import ru.yandex.practicum.filmorate.exception.ObjectNotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
 
@@ -18,6 +20,7 @@ import java.util.List;
 public class UserService {
 
     private final UserDao userDao;
+    private final FeedDao feedDao;
 
     public List<User> getAll() {
         return userDao.getAll();
@@ -58,4 +61,8 @@ public class UserService {
         }
     }
 
+    public List<Event> getFeed(long id) {
+        userDao.get(id);
+        return feedDao.getFeed(id);
+    }
 }
