@@ -4,11 +4,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
+import ru.yandex.practicum.filmorate.dao.DirectorDao;
 import ru.yandex.practicum.filmorate.dao.FilmDao;
 import ru.yandex.practicum.filmorate.dao.GenreDao;
 import ru.yandex.practicum.filmorate.dao.MpaDao;
 import ru.yandex.practicum.filmorate.exception.ObjectNotFoundException;
 import ru.yandex.practicum.filmorate.mapper.FilmMapper;
+import ru.yandex.practicum.filmorate.model.Director;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
 
@@ -22,6 +24,7 @@ public class FilmDaoImpl implements FilmDao {
     private final MpaDao mpaDao;
     private final GenreDao genreDao;
     private final FilmMapper filmMapper;
+    private final DirectorDao directorDao;
 
     @Override
     public List<Film> getAll() {
@@ -38,6 +41,8 @@ public class FilmDaoImpl implements FilmDao {
         film.setId(simpleJdbcInsert.executeAndReturnKey(film.toMap()).longValue());
         List<Genre> filmGenres = genreDao.add(film.getId(), film.getGenres());
         film.setGenres(filmGenres);
+        List<Director> filmDirectors = directorDao.addFilm(film.getId(), film.getDirectors());
+        film.setDirectors(filmDirectors);
         return film;
     }
 
@@ -60,7 +65,34 @@ public class FilmDaoImpl implements FilmDao {
         String sql = "SELECT*\n" +
                 "FROM films\n" +
                 "WHERE film_id=?";
-        return jdbcTemplate.query(sql, new FilmMapper(mpaDao, genreDao), filmId).stream().findFirst()
+        return jdbcTemplate.query(sql, new FilmMapper(mpaDao, genreDao, directorDao), filmId).stream().findFirst()
                 .orElseThrow(() -> new ObjectNotFoundException("Фильм не найден"));
+    }
+
+    @Override
+    public List<Film> getDirectorFilms(int directorId, String sortBy) {
+        String sql = null;
+        switch (sortBy) {
+            case "year":
+                sql = "SELECT*\n" +
+                        "FROM film_director fd\n" +
+                        "JOIN films f ON fd.film_id=f.film_id\n" +
+                        "WHERE fd.director_id=?\n" +
+                        "ORDER BY f.release_date";
+                break;
+
+            case "likes":
+                sql = "SELECT*\n" +
+                        "FROM film_director fd\n" +
+                        "JOIN films f ON fd.film_id=f.film_id\n" +
+                        "LEFT JOIN movie_likes ml ON fd.film_id=ml.film_id\n" +
+                        "WHERE fd.director_id=?\n" +
+                        "GROUP BY fd.film_id, ml.user_id\n" +
+                        "ORDER BY COUNT (ml.user_id) DESC";
+                break;
+        }
+        assert sql != null;
+        return jdbcTemplate.query(sql, filmMapper, directorId);
+
     }
 }
