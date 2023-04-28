@@ -14,7 +14,7 @@ import java.util.List;
 
 @Repository
 @RequiredArgsConstructor
-public class LikeImpl implements LikeDao {
+public class LikeDaoImpl implements LikeDao {
 
     private final JdbcTemplate jdbcTemplate;
     private final MpaDao mpaDao;

@@ -3,12 +3,8 @@ package ru.yandex.practicum.filmorate.services;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
-import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.dao.UserDao;
-import ru.yandex.practicum.filmorate.exception.ObjectNotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
 
 import javax.validation.ValidationException;
@@ -21,7 +17,6 @@ import java.util.List;
 public class UserService {
 
     private final UserDao userDao;
-    private final JdbcTemplate jdbcTemplate;
 
     public List<User> getAll() {
         return userDao.getAll();
@@ -29,33 +24,20 @@ public class UserService {
 
     public User add(User user) {
         validator(user);
-        SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
-                .withTableName("users")
-                .usingGeneratedKeyColumns("user_id");
-        user.setId(simpleJdbcInsert.executeAndReturnKey(user.toMap()).longValue());
         return userDao.add(user);
     }
 
     public User update(User user) {
         validator(user);
         check(user);
-        if (!isExist(user.getId())) {
-            throw new ObjectNotFoundException("Пользователь не найден");
-        }
+        userDao.get(user.getId());
         return userDao.update(user);
     }
 
     public User get(long id) {
-        if (!isExist(id)) {
-            throw new ObjectNotFoundException("Пользователь не найден");
-        }
         return userDao.get(id);
     }
 
-    private boolean isExist(long id) {
-        SqlRowSet userRows = jdbcTemplate.queryForRowSet("SELECT* FROM users WHERE user_id = ?", id);
-        return userRows.next();
-    }
 
     private void validator(User user) {
         if (user.getLogin().contains(" ")) {

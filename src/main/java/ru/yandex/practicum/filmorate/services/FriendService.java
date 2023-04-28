@@ -1,10 +1,9 @@
 package ru.yandex.practicum.filmorate.services;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.dao.FriendDao;
+import ru.yandex.practicum.filmorate.dao.UserDao;
 import ru.yandex.practicum.filmorate.exception.ObjectNotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
 
@@ -15,12 +14,10 @@ import java.util.List;
 public class FriendService {
 
     private final FriendDao friendDao;
-    private final JdbcTemplate jdbcTemplate;
+    private final UserDao userDao;
 
     public List<User> get(long id) {
-        if (!isExist(id)) {
-            throw new ObjectNotFoundException("Пользователь не найден");
-        }
+        userDao.get(id);
         return friendDao.get(id);
     }
 
@@ -32,16 +29,15 @@ public class FriendService {
     }
 
     public void delete(long userId, long userFriendId) {
+        userDao.get(userId);
+        userDao.get(userFriendId);
         friendDao.delete(userId, userFriendId);
     }
 
     public List<User> getMutualUsersFriends(long userId, long otherUserId) {
+        userDao.get(userId);
+        userDao.get(otherUserId);
         return friendDao.getMutualUsersFriends(userId, otherUserId);
-    }
-
-    private boolean isExist(long id) {
-        SqlRowSet userRows = jdbcTemplate.queryForRowSet("SELECT* FROM users WHERE user_id = ?", id);
-        return userRows.next();
     }
 
 }

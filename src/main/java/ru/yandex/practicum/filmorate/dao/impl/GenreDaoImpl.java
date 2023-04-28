@@ -5,6 +5,7 @@ import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.dao.GenreDao;
+import ru.yandex.practicum.filmorate.exception.ObjectNotFoundException;
 import ru.yandex.practicum.filmorate.mapper.GenreMapper;
 import ru.yandex.practicum.filmorate.model.Genre;
 
@@ -15,16 +16,20 @@ import java.util.List;
 
 @Repository
 @RequiredArgsConstructor
-public class GenreImpl implements GenreDao {
+public class GenreDaoImpl implements GenreDao {
 
     private final JdbcTemplate jdbcTemplate;
     private final GenreMapper genreMapper;
 
     @Override
     public Genre get(int genreId) {
-        String sql = "SELECT*\n" +
-                "FROM genres WHERE genre_id=?";
-        return jdbcTemplate.queryForObject(sql, genreMapper, genreId);
+        try {
+            String sql = "SELECT*\n" +
+                    "FROM genres WHERE genre_id=?";
+            return jdbcTemplate.queryForObject(sql, genreMapper, genreId);
+        } catch (RuntimeException e) {
+            throw new ObjectNotFoundException("Жанр не найден");
+        }
     }
 
     @Override
