@@ -5,13 +5,12 @@ import lombok.Data;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PastOrPresent;
-import java.sql.Timestamp;
 
 @Data
 @Builder
 public class Event {
     @PastOrPresent
-    private Timestamp timestamp;
+    private long timestamp;
     @NotNull
     private long userId;
     @NotNull

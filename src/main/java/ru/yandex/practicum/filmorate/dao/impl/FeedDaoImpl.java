@@ -28,8 +28,8 @@ public class FeedDaoImpl implements FeedDao {
         String sql = "SELECT *\n" +
                 "FROM feed\n" +
                 "WHERE user_id = ?\n" +
-                "ORDER BY time_stamp DESC,\n" +
-                "event_id DESC";
+                "ORDER BY time_stamp,\n" +
+                "event_id";
         return jdbcTemplate.query(sql, feedMapper, userId);
     }
 }
