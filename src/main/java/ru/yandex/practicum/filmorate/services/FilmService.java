@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.dao.DirectorDao;
 import ru.yandex.practicum.filmorate.dao.FilmDao;
 import ru.yandex.practicum.filmorate.dao.GenreDao;
+import ru.yandex.practicum.filmorate.exception.ObjectNotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Director;
 import ru.yandex.practicum.filmorate.model.Film;
@@ -42,18 +43,22 @@ public class FilmService {
         directorDao.deleteFromFilm(film.getId());
         List<Genre> filmGenres = genreDao.add(film.getId(), film.getGenres());
         film.setGenres(filmGenres);
-        List<Director> directors = directorDao.addFilm(film.getId(), film.getDirectors());
+        List<Director> directors = directorDao.addDirectorInFilm(film.getId(), film.getDirectors());
         film.setDirectors(directors);
         return filmDao.update(film);
     }
 
     public Film get(long filmId) {
+        if (filmId <= 0) {
+            log.info("Ошибка. id не должно быть нулевым или иметь отрицательное значение {}", filmId);
+            throw new ObjectNotFoundException("Фильм не найден");
+        }
         return filmDao.get(filmId);
     }
 
     private void validator(Film film) {
         if (film.getReleaseDate().isBefore(BOUNDARY_DATE)) {
-            log.warn("Ошибка в дате релиза");
+            log.warn("Ошибка в дате релиза. Дата релиза должна быть после {}", BOUNDARY_DATE);
             throw new ValidationException("Ошибка в дате релиза фильма");
         }
     }

@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface DirectorDao {
 
-    List<Director> addFilm(long filmId, List<Director> directors);
+    List<Director> addDirectorInFilm(long filmId, List<Director> directors);
 
     void deleteFromFilm(long filmId);
 
@@ -17,7 +17,7 @@ public interface DirectorDao {
     Director update(Director director);
 
 
-    List<Director> getDirectorListForFilm(long filmId);
+    List<Director> getDirectorListFromFilm(long filmId);
 
     Director add(Director director);
 

@@ -17,6 +17,7 @@ import ru.yandex.practicum.filmorate.model.Genre;
 
 import java.util.List;
 
+
 @Repository
 @RequiredArgsConstructor
 public class FilmDaoImpl implements FilmDao {
@@ -42,7 +43,7 @@ public class FilmDaoImpl implements FilmDao {
         film.setId(simpleJdbcInsert.executeAndReturnKey(film.toMap()).longValue());
         List<Genre> filmGenres = genreDao.add(film.getId(), film.getGenres());
         film.setGenres(filmGenres);
-        List<Director> filmDirectors = directorDao.addFilm(film.getId(), film.getDirectors());
+        List<Director> filmDirectors = directorDao.addDirectorInFilm(film.getId(), film.getDirectors());
         film.setDirectors(filmDirectors);
         return film;
     }

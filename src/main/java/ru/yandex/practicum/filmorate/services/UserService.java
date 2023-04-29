@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.dao.UserDao;
+import ru.yandex.practicum.filmorate.exception.ObjectNotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
 
 import javax.validation.ValidationException;
@@ -35,6 +36,10 @@ public class UserService {
     }
 
     public User get(long id) {
+        if (id <= 0) {
+            log.info("Ошибка. id не должно быть нулевым или иметь отрицательное значение {}", id);
+            throw new ObjectNotFoundException("Пользователь не найден");
+        }
         return userDao.get(id);
     }
 
