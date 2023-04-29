@@ -7,7 +7,9 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.dao.UserDao;
 import ru.yandex.practicum.filmorate.exception.ObjectNotFoundException;
+import ru.yandex.practicum.filmorate.mapper.FilmMapper;
 import ru.yandex.practicum.filmorate.mapper.UserMapper;
+import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
 
 import java.util.List;
@@ -19,6 +21,8 @@ public class UserDaoImpl implements UserDao {
 
     private final JdbcTemplate jdbcTemplate;
     private final UserMapper userMapper;
+
+    private final FilmMapper filmMapper;
 
     @Override
     public List<User> getAll() {
@@ -61,4 +65,22 @@ public class UserDaoImpl implements UserDao {
         }
     }
 
+    @Override
+    public List<Film>  getRecommendations(long userId) {
+        try {
+            String sql = "SELECT f.FILM_ID, f.FILM_TITLE, f.DESCRIPTION, f.RELEASE_DATE, f.DURATION, f.MPA_ID\n" +
+                    "FROM (SELECT ml.user_id, ml.FILM_ID, ml2.USER_ID AS other_user \n" +
+                    "      FROM MOVIE_LIKES AS ml\n" +
+                    "      INNER JOIN MOVIE_LIKES ml2 ON ml.FILM_ID = ml2.FILM_ID \n" +
+                    "      WHERE ml.user_id = ?\n" +
+                    "      GROUP BY ml.user_id, ml.FILM_ID, ml2.USER_ID) AS TABLE_1\n" +
+                    "INNER JOIN MOVIE_LIKES AS  ml3 ON TABLE_1.other_user = ml3.USER_ID\n" +
+                    "INNER JOIN FILMS AS  f ON ml3.FILM_ID = f.FILM_ID \n" +
+                    "WHERE TABLE_1.other_user != ? AND TABLE_1.FILM_ID != ml3.FILM_ID;";
+            return jdbcTemplate.query(sql, filmMapper, userId, userId);
+        } catch (RuntimeException e) {
+            log.info("Некорректный id {}", userId);
+            throw new ObjectNotFoundException("Пользователь не найден");
+        }
+    }
 }
