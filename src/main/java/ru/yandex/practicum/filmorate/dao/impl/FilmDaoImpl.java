@@ -73,6 +73,28 @@ public class FilmDaoImpl implements FilmDao {
     }
 
     @Override
+    public List<Film> getFilmBySearch(String query, String by) {
+        StringBuilder sql = new StringBuilder("SELECT * "
+                + "FROM films f "
+                + "LEFT JOIN movie_likes ml ON f.film_id = ml.film_id "
+                + "LEFT JOIN mpa m ON m.mpa_id = f.mpa_id "
+                + "LEFT JOIN film_director fd ON f.film_id = fd.film_id "
+                + "LEFT JOIN director d ON fd.director_id = d.director_id ");
+        if (by.equals("title")) {
+            sql.append("WHERE LOWER(f.film_title) LIKE LOWER('%").append(query).append("%') ");
+        }
+        if (by.equals("director")) {
+            sql.append("WHERE LOWER(d.director_name) LIKE LOWER('%").append(query).append("%') ");
+        }
+        if (by.equals("title,director") || by.equals("director,title")) {
+            sql.append("WHERE LOWER(f.film_title) LIKE LOWER('%").append(query).append("%') ");
+            sql.append("OR LOWER(d.director_name) LIKE LOWER('%").append(query).append("%') ");
+        }
+        sql.append("GROUP BY f.film_id, ml.film_id " + "ORDER BY COUNT(ml.film_id) DESC");
+        return jdbcTemplate.query(sql.toString(), filmMapper);
+    }
+
+    @Override
     public List<Film> getDirectorFilms(int directorId, String sortBy) {
         String sql;
         switch (sortBy) {

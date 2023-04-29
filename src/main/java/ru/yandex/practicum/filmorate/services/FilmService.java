@@ -68,4 +68,11 @@ public class FilmService {
         return filmDao.getDirectorFilms(directorId, sortBy);
     }
 
+    public List<Film> searchFilms(String query, String by) {
+        if (!(by.contains("title") || by.contains("director") || by.contains("title,director") || by.contains("director,title") || by.contains("unknown"))) {
+            log.debug("Некорректное значение выборки поиска в поле BY = {}", by);
+            throw new IllegalArgumentException("Некорректное значение выборки поиска");
+        }
+        return filmDao.getFilmBySearch(query, by);
+    }
 }
