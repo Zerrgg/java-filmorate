@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorate.dao.impl;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
@@ -15,6 +16,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
 @Repository
 @RequiredArgsConstructor
 public class DirectorDaoImpl implements DirectorDao {
@@ -29,6 +31,7 @@ public class DirectorDaoImpl implements DirectorDao {
                     "FROM director WHERE director_id=?";
             return jdbcTemplate.queryForObject(sql, directorMapper, directorId);
         } catch (RuntimeException e) {
+            log.info("Режиссёра с таким id не существует в базе {}", directorId);
             throw new ObjectNotFoundException("Режиссёр не найден");
         }
     }
@@ -41,7 +44,7 @@ public class DirectorDaoImpl implements DirectorDao {
     }
 
     @Override
-    public List<Director> getDirectorListForFilm(long filmId) {
+    public List<Director> getDirectorListFromFilm(long filmId) {
         String sql = "SELECT fd.*, d.director_name\n" +
                 "FROM film_director AS fd JOIN director AS d ON d.director_id = fd.director_id\n" +
                 "WHERE fd.film_id = ?";
@@ -49,9 +52,10 @@ public class DirectorDaoImpl implements DirectorDao {
     }
 
     @Override
-    public List<Director> addFilm(long filmId, List<Director> directors) {
+    public List<Director> addDirectorInFilm(long filmId, List<Director> directors) {
         String sql = "MERGE INTO film_director (film_id, director_id) KEY(film_id, director_id) VALUES (?, ?)";
         if (directors == null || directors.isEmpty()) {
+            log.info("Режиссёр ещё не был добавлен в базу.");
             return new ArrayList<>();
         }
         jdbcTemplate.batchUpdate(sql, new BatchPreparedStatementSetter() {
@@ -66,7 +70,7 @@ public class DirectorDaoImpl implements DirectorDao {
                 return directors.size();
             }
         });
-        return getDirectorListForFilm(filmId);
+        return getDirectorListFromFilm(filmId);
     }
 
     @Override

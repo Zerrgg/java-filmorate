@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorate.dao.impl;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -14,6 +15,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
 @Repository
 @RequiredArgsConstructor
 public class GenreDaoImpl implements GenreDao {
@@ -58,6 +60,7 @@ public class GenreDaoImpl implements GenreDao {
     public List<Genre> add(long filmId, List<Genre> genres) {
         String sql = "MERGE INTO film_genre (film_id, genre_id) KEY(film_id, genre_id) VALUES (?, ?)";
         if (genres == null || genres.isEmpty()) {
+            log.info("Жанр ещё не был добавлен в базу.");
             return new ArrayList<>();
         }
         jdbcTemplate.batchUpdate(sql, new BatchPreparedStatementSetter() {

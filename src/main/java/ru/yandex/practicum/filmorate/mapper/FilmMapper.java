@@ -33,7 +33,7 @@ public class FilmMapper implements RowMapper<Film> {
         LocalDate releaseDate = rs.getDate("release_date").toLocalDate();
         Mpa mpa = mpaDao.get(rs.getInt("mpa_id"));
         List<Genre> genres = genreDao.getGenresListForFilm(rs.getInt("film_id"));
-        List<Director> directors = directorDao.getDirectorListForFilm(rs.getInt("film_id"));
+        List<Director> directors = directorDao.getDirectorListFromFilm(rs.getInt("film_id"));
 
         return rs.wasNull() ? null : new Film(id, name, description, duration, releaseDate, mpa, genres, directors);
     }

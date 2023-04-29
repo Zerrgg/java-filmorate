@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorate.dao.impl;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
@@ -11,6 +12,7 @@ import ru.yandex.practicum.filmorate.model.User;
 
 import java.util.List;
 
+@Slf4j
 @Repository
 @RequiredArgsConstructor
 public class UserDaoImpl implements UserDao {
@@ -54,6 +56,7 @@ public class UserDaoImpl implements UserDao {
                     "WHERE user_id=?";
             return jdbcTemplate.queryForObject(sql, userMapper, userId);
         } catch (RuntimeException e) {
+            log.info("Некорректный id {}", userId);
             throw new ObjectNotFoundException("Пользователь не найден");
         }
     }

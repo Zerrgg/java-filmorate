@@ -10,6 +10,7 @@ import ru.yandex.practicum.filmorate.model.Film;
 import javax.validation.ValidationException;
 import java.util.List;
 
+
 @Service
 @RequiredArgsConstructor
 public class LikeService {
@@ -19,6 +20,8 @@ public class LikeService {
     private final UserDao userDao;
 
     public void add(long filmId, long userId) {
+        filmDao.get(filmId);
+        userDao.get(userId);
         likeDao.add(userId, filmId);
     }
 
