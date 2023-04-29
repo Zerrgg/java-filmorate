@@ -10,6 +10,7 @@ import ru.yandex.practicum.filmorate.model.User;
 import java.util.Collections;
 import java.util.List;
 
+
 @Repository
 @RequiredArgsConstructor
 public class FriendDaoImpl implements FriendDao {
