@@ -9,6 +9,7 @@ import ru.yandex.practicum.filmorate.dao.FilmDao;
 import ru.yandex.practicum.filmorate.dao.GenreDao;
 import ru.yandex.practicum.filmorate.dao.MpaDao;
 import ru.yandex.practicum.filmorate.exception.ObjectNotFoundException;
+import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.mapper.FilmMapper;
 import ru.yandex.practicum.filmorate.model.Director;
 import ru.yandex.practicum.filmorate.model.Film;
@@ -71,7 +72,7 @@ public class FilmDaoImpl implements FilmDao {
 
     @Override
     public List<Film> getDirectorFilms(int directorId, String sortBy) {
-        String sql = null;
+        String sql;
         switch (sortBy) {
             case "year":
                 sql = "SELECT*\n" +
@@ -90,9 +91,10 @@ public class FilmDaoImpl implements FilmDao {
                         "GROUP BY fd.film_id, ml.user_id\n" +
                         "ORDER BY COUNT (ml.user_id) DESC";
                 break;
-        }
-        assert sql != null;
-        return jdbcTemplate.query(sql, filmMapper, directorId);
 
+            default:
+                throw new ValidationException("Некорректный параметр сортировки");
+        }
+        return jdbcTemplate.query(sql, filmMapper, directorId);
     }
 }
