@@ -31,7 +31,7 @@ public class DirectorDaoImpl implements DirectorDao {
                     "FROM director WHERE director_id=?";
             return jdbcTemplate.queryForObject(sql, directorMapper, directorId);
         } catch (RuntimeException e) {
-            log.info("Режиссёра с таким id не существует в базе {}", directorId);
+            log.info("Режиссёра с id - {} не существует в базе", directorId);
             throw new ObjectNotFoundException("Режиссёр не найден");
         }
     }

@@ -1,7 +1,7 @@
 package ru.yandex.practicum.filmorate.dao.impl;
 
 import lombok.RequiredArgsConstructor;
-import org.apache.catalina.mapper.Mapper;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
@@ -18,6 +18,7 @@ import ru.yandex.practicum.filmorate.model.Genre;
 
 import java.util.List;
 
+@Slf4j
 @Repository
 @RequiredArgsConstructor
 public class FilmDaoImpl implements FilmDao {
@@ -50,10 +51,15 @@ public class FilmDaoImpl implements FilmDao {
 
     @Override
     public Film update(Film film) {
-        String sql = "UPDATE films SET film_title=?, description=?, duration=?, release_date=?,mpa_id=?\n"
-                + "WHERE film_id=? ";
-        jdbcTemplate.update(sql, film.getName(), film.getDescription(), film.getDuration(), film.getReleaseDate(),
-                film.getMpa().getId(), film.getId());
+        String sql = "UPDATE films SET film_title=?, description=?, duration=?, release_date=?,mpa_id=?\n" +
+                "WHERE film_id=? ";
+        jdbcTemplate.update(sql,
+                film.getName(),
+                film.getDescription(),
+                film.getDuration(),
+                film.getReleaseDate(),
+                film.getMpa().getId(),
+                film.getId());
         return film;
     }
 
@@ -111,6 +117,7 @@ public class FilmDaoImpl implements FilmDao {
                 break;
 
             default:
+                log.info("Запрашиваемой сортировки не существует: {}", sortBy);
                 throw new ValidationException("Некорректный параметр сортировки");
         }
         return jdbcTemplate.query(sql, filmMapper, directorId);

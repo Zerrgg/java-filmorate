@@ -19,7 +19,7 @@ public class UserController {
 
     @PostMapping
     public User add(@Valid @RequestBody User user) {
-        log.info("POST запрос на создание пользователя");
+        log.info("POST запрос на создание пользователя: {}", user);
         return userService.add(user);
     }
 
@@ -31,13 +31,13 @@ public class UserController {
 
     @GetMapping("/{id}")
     public User get(@PathVariable long id) {
-        log.info("GET запрос на получение пользователя");
+        log.info("GET запрос на получение пользователя с id: {}", id);
         return userService.get(id);
     }
 
     @PutMapping
     public User update(@Valid @RequestBody User user) {
-        log.info("PUT запрос на обновление пользователя");
+        log.info("PUT запрос на обновление пользователя: {}", user);
         return userService.update(user);
     }
 
