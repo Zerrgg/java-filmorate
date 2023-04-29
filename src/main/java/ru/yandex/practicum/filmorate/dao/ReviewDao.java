@@ -8,9 +8,19 @@ public interface ReviewDao {
 
     Review updateReview(Review review);
 
-    void deleteReview(int reviewId);
+    void deleteReview(long reviewId);
 
-    Review getReview(int reviewId);
+    Review getReview(long reviewId);
 
-    List<Review> getFilmReviews(int filmId, int count);
+    List<Review> getByFilmReviews(long filmId, int count);
+
+    List<Review> getAll();
+
+    void addLike(long id, long userId);
+
+    void addDislike(long id, long userId);
+
+    void deleteLike(long id, long userId);
+
+    void deleteDislike(long id, long userId);
 }
