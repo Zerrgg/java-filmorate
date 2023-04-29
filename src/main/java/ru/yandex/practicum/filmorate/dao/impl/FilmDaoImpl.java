@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorate.dao.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.apache.catalina.mapper.Mapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
@@ -36,7 +37,9 @@ public class FilmDaoImpl implements FilmDao {
 
     @Override
     public Film add(Film film) {
-        SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName("films").usingGeneratedKeyColumns("film_id");
+        SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
+                .withTableName("films")
+                .usingGeneratedKeyColumns("film_id");
         film.setId(simpleJdbcInsert.executeAndReturnKey(film.toMap()).longValue());
         List<Genre> filmGenres = genreDao.add(film.getId(), film.getGenres());
         film.setGenres(filmGenres);
@@ -47,8 +50,10 @@ public class FilmDaoImpl implements FilmDao {
 
     @Override
     public Film update(Film film) {
-        String sql = "UPDATE films SET film_title=?, description=?, duration=?, release_date=?,mpa_id=?\n" + "WHERE film_id=? ";
-        jdbcTemplate.update(sql, film.getName(), film.getDescription(), film.getDuration(), film.getReleaseDate(), film.getMpa().getId(), film.getId());
+        String sql = "UPDATE films SET film_title=?, description=?, duration=?, release_date=?,mpa_id=?\n"
+                + "WHERE film_id=? ";
+        jdbcTemplate.update(sql, film.getName(), film.getDescription(), film.getDuration(), film.getReleaseDate(),
+                film.getMpa().getId(), film.getId());
         return film;
     }
 
@@ -63,7 +68,12 @@ public class FilmDaoImpl implements FilmDao {
 
     @Override
     public List<Film> getFilmBySearch(String query, String by) {
-        StringBuilder sql = new StringBuilder("SELECT f.film_id, f.film_title, f.description, f.release_date, f.duration, m.mpa_id, m.mpa_name " + "FROM films f " + "LEFT JOIN movie_likes ml ON f.film_id = ml.film_id " + "LEFT JOIN mpa m ON m.mpa_id = f.mpa_id " + "LEFT JOIN film_director fd ON f.film_id = fd.film_id " + "LEFT JOIN director d ON fd.director_id = d.director_id ");
+        StringBuilder sql = new StringBuilder("SELECT * "
+                + "FROM films f "
+                + "LEFT JOIN movie_likes ml ON f.film_id = ml.film_id "
+                + "LEFT JOIN mpa m ON m.mpa_id = f.mpa_id "
+                + "LEFT JOIN film_director fd ON f.film_id = fd.film_id "
+                + "LEFT JOIN director d ON fd.director_id = d.director_id ");
         if (by.equals("title")) {
             sql.append("WHERE LOWER(f.film_title) LIKE LOWER('%").append(query).append("%') ");
         }
@@ -72,7 +82,7 @@ public class FilmDaoImpl implements FilmDao {
         }
         if (by.equals("title,director") || by.equals("director,title")) {
             sql.append("WHERE LOWER(f.film_title) LIKE LOWER('%").append(query).append("%') ");
-            sql.append("WHERE LOWER(d.director_name) LIKE LOWER('%").append(query).append("%') ");
+            sql.append("OR LOWER(d.director_name) LIKE LOWER('%").append(query).append("%') ");
         }
         sql.append("GROUP BY f.film_id, ml.film_id " + "ORDER BY COUNT(ml.film_id) DESC");
         return jdbcTemplate.query(sql.toString(), filmMapper);

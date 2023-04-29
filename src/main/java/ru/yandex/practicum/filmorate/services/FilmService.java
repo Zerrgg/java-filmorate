@@ -69,8 +69,7 @@ public class FilmService {
     }
 
     public List<Film> searchFilms(String query, String by) {
-        if (by.contains("title") || by.contains("director") || by.contains("title,director") ||
-                by.contains("director,title") || by.contains("unknown")) {
+        if (!(by.contains("title") || by.contains("director") || by.contains("title,director") || by.contains("director,title") || by.contains("unknown"))) {
             log.debug("Некорректное значение выборки поиска в поле BY = {}", by);
             throw new IllegalArgumentException("Некорректное значение выборки поиска");
         }
