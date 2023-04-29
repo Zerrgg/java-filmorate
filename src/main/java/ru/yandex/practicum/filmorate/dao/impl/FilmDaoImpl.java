@@ -9,6 +9,7 @@ import ru.yandex.practicum.filmorate.dao.DirectorDao;
 import ru.yandex.practicum.filmorate.dao.FilmDao;
 import ru.yandex.practicum.filmorate.dao.GenreDao;
 import ru.yandex.practicum.filmorate.dao.MpaDao;
+import ru.yandex.practicum.filmorate.dao.*;
 import ru.yandex.practicum.filmorate.exception.ObjectNotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.mapper.FilmMapper;
@@ -28,6 +29,8 @@ public class FilmDaoImpl implements FilmDao {
     private final GenreDao genreDao;
     private final FilmMapper filmMapper;
     private final DirectorDao directorDao;
+
+
 
     @Override
     public List<Film> getAll() {
@@ -121,5 +124,29 @@ public class FilmDaoImpl implements FilmDao {
                 throw new ValidationException("Некорректный параметр сортировки");
         }
         return jdbcTemplate.query(sql, filmMapper, directorId);
+    }
+
+
+    public List<Film> getCommonFilms(long userId, long friendId) {
+        String sql = "Select fffu.FILM_ID, fffu.FILM_TITLE, fffu.DESCRIPTION, fffu.RELEASE_DATE,fffu.DURATION,fffu.MPA_ID, fffu.MPA_NAME, fg.GENRE_ID\n" +
+                "From(Select *\n" +
+                "From(\n" +
+                "Select mpf.*, ml.USER_ID as like_first_user \n" +
+                "FROM\n" +
+                "(Select mpfilm.*\n" +
+                "from (Select f.*, m.mpa_name, COUNT(ml.user_id) as likes\n" +
+                "FROM FILMS as f left join MOVIE_LIKES ML on f.FILM_ID = ML.FILM_ID \n" +
+                "join MPA M on f.MPA_ID = M.MPA_ID\n" +
+                "group by f.FILM_ID\n" +
+                "order by likes desc) as mpfilm) as mpf\n" +
+                "left join MOVIE_LIKES ML on mpf.FILM_ID=ml.FILM_ID\n" +
+                "where ml.USER_ID=?) as favorite_films_first_user) as fffu\n" +
+                "left join MOVIE_LIKES ML on fffu.FILM_ID=ml.FILM_ID\n" +
+                "left join FRIENDSHIP FS on fffu.like_first_user=fs.USER_ID_WHOM_REQUEST_WAS_SENT\n" +
+                "left join FRIENDSHIP fs2 on fffu.like_first_user=fs2.USER_ID_WHO_SENT_REQUEST\n" +
+                "left join FILM_GENRE as fg on fffu.FILM_ID=fg.FILM_ID\n" +
+                "where ml.USER_ID=?\n" +
+                "group by fffu.FILM_ID";
+        return jdbcTemplate.query(sql, filmMapper, userId, friendId);
     }
 }

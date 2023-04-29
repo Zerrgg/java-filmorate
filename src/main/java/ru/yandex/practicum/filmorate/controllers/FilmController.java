@@ -55,4 +55,10 @@ public class FilmController {
                 "популярных фильмов расширенного поиска параметрами: QUERY = {}, BY = {}.", query, by);
         return filmService.searchFilms(query, by);
     }
+    @GetMapping ("/common")
+    public List<Film> getCommonFilms(@RequestParam long userId, @RequestParam long friendId ) {
+        log.info("GET запрос на получение списка общих фильмов друзей");
+        return filmService.getCommonFilms(userId, friendId);
+    }
+
 }
