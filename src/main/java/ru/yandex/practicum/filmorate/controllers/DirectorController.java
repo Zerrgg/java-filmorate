@@ -25,7 +25,7 @@ public class DirectorController {
 
     @GetMapping("/{id}")
     public Director get(@PathVariable int id) {
-        log.info("GET запрос на получение режиссёра");
+        log.info("GET запрос на получение режиссёра с id: {}", id);
         return directorService.get(id);
     }
 
@@ -43,7 +43,7 @@ public class DirectorController {
 
     @DeleteMapping("/{id}")
     public void delete(@PathVariable int id) {
-        log.info("DELETE запрос на удаление режиссёра");
+        log.info("DELETE запрос на удаление режиссёра с id: {}", id);
         directorService.delete(id);
     }
 }

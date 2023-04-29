@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorate.dao.impl;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
@@ -17,7 +18,7 @@ import ru.yandex.practicum.filmorate.model.Genre;
 
 import java.util.List;
 
-
+@Slf4j
 @Repository
 @RequiredArgsConstructor
 public class FilmDaoImpl implements FilmDao {
@@ -94,6 +95,7 @@ public class FilmDaoImpl implements FilmDao {
                 break;
 
             default:
+                log.info("Запрашиваемой сортировки не существует: {}", sortBy);
                 throw new ValidationException("Некорректный параметр сортировки");
         }
         return jdbcTemplate.query(sql, filmMapper, directorId);

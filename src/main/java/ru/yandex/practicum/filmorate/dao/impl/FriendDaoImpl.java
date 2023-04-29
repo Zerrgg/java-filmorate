@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorate.dao.impl;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.dao.FriendDao;
@@ -10,7 +11,7 @@ import ru.yandex.practicum.filmorate.model.User;
 import java.util.Collections;
 import java.util.List;
 
-
+@Slf4j
 @Repository
 @RequiredArgsConstructor
 public class FriendDaoImpl implements FriendDao {
@@ -50,6 +51,7 @@ public class FriendDaoImpl implements FriendDao {
                 "WHERE f1.user_id_who_sent_request = ?";
         List<User> resultList = jdbcTemplate.query(sql, userMapper, userId, otherUserId);
         if (resultList.isEmpty()) {
+            log.info("У пользователей с id - {} и {} нет общих друзей", userId, otherUserId);
             return Collections.emptyList();
         }
         return resultList;

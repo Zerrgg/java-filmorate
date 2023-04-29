@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorate.dao.impl;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.dao.MpaDao;
@@ -10,6 +11,7 @@ import ru.yandex.practicum.filmorate.model.Mpa;
 
 import java.util.List;
 
+@Slf4j
 @Repository
 @RequiredArgsConstructor
 public class MpaDaoImpl implements MpaDao {
@@ -25,6 +27,7 @@ public class MpaDaoImpl implements MpaDao {
                     "WHERE mpa_id=?";
             return jdbcTemplate.queryForObject(sql, mpaMapper, mpaId);
         } catch (RuntimeException e) {
+            log.info("Рейтинга с id - {} не существует в базе", mpaId);
             throw new ObjectNotFoundException("Рейтинг не найден");
         }
     }
