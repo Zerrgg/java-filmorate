@@ -18,7 +18,7 @@ public class LikeController {
 
     @PutMapping("/{id}/like/{userId}")
     public void add(@PathVariable long id, @PathVariable long userId) {
-        log.info("PUT запрос на добавление лайка к фильму");
+        log.info("PUT запрос на добавление лайка пользователя с id - {} к фильму с id - {}", userId, id);
         likeService.add(id, userId);
     }
 
@@ -30,7 +30,7 @@ public class LikeController {
 
     @DeleteMapping("/{id}/like/{userId}")
     public void delete(@PathVariable long id, @PathVariable long userId) {
-        log.info("DELETE запрос на удаление лайка");
+        log.info("DELETE запрос на удаление лайка пользователя с id - {} к фильму с id - {}", userId, id);
         likeService.delete(id, userId);
     }
 

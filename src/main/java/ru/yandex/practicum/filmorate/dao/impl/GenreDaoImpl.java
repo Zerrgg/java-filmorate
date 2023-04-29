@@ -30,6 +30,7 @@ public class GenreDaoImpl implements GenreDao {
                     "FROM genres WHERE genre_id=?";
             return jdbcTemplate.queryForObject(sql, genreMapper, genreId);
         } catch (RuntimeException e) {
+            log.info("Жанра с id - {} не существует", genreId);
             throw new ObjectNotFoundException("Жанр не найден");
         }
     }

@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorate.dao.impl;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
@@ -11,6 +12,7 @@ import ru.yandex.practicum.filmorate.model.Review;
 
 import java.util.List;
 
+@Slf4j
 @Repository
 @RequiredArgsConstructor
 public class ReviewDaoImpl implements ReviewDao {
@@ -46,6 +48,7 @@ public class ReviewDaoImpl implements ReviewDao {
             String sql = "SELECT * FROM reviews WHERE reviews_id = ?";
             return jdbcTemplate.queryForObject(sql, reviewMapper, reviewId);
         } catch (RuntimeException e) {
+            log.info("Отзыва с id - {} не существует в базе", reviewId);
             throw new ObjectNotFoundException("Отзыв не найден");
         }
     }
@@ -102,14 +105,12 @@ public class ReviewDaoImpl implements ReviewDao {
 
     private void addLikesOrDislike(long id, long userId, long useful, Boolean isPositive) {
         String sqlAdd = "INSERT INTO review_likes(reviews_id, user_id, isPositive) VALUES (?,?,?)";
-
         jdbcTemplate.update(sqlAdd, id, userId, isPositive);
         addUseful(id, useful);
     }
 
     private void deleteLikesOrDislike(long id, long userId, long useful) {
         String sqlDelete = "DELETE FROM review_likes WHERE reviews_id = ? AND  user_id = ?";
-
         jdbcTemplate.update(sqlDelete, id, userId);
         addUseful(id, useful);
     }

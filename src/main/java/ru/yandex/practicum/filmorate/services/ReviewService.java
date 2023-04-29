@@ -71,6 +71,7 @@ public class ReviewService {
         Long filmId = review.getFilmId();
         Long userId = review.getUserId();
         if (userDao.get(userId) == null || filmDao.get(filmId) == null) {
+            log.info("Передан некорректный id фильма и пользователя");
             throw new ValidationException("Не передан id");
         }
     }
