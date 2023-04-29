@@ -18,6 +18,6 @@ public class ReviewMapper implements RowMapper<Review> {
         Boolean isPositive = rs.getBoolean("isPositive");
         Long useful = rs.getLong("useful");
 
-        return rs.wasNull() ? null: new Review(reviewId, content, isPositive, userId, filmId, useful);
+        return rs.wasNull() ? null : new Review(reviewId, content, isPositive, userId, filmId, useful);
     }
 }
