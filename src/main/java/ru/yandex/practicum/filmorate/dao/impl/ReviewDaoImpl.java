@@ -6,7 +6,6 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.dao.ReviewDao;
 import ru.yandex.practicum.filmorate.exception.ObjectNotFoundException;
-
 import ru.yandex.practicum.filmorate.mapper.ReviewMapper;
 import ru.yandex.practicum.filmorate.model.Review;
 
@@ -14,7 +13,7 @@ import java.util.List;
 
 @Repository
 @RequiredArgsConstructor
-public class ReviewImpl implements ReviewDao {
+public class ReviewDaoImpl implements ReviewDao {
 
     private final JdbcTemplate jdbcTemplate;
     private final ReviewMapper reviewMapper;
