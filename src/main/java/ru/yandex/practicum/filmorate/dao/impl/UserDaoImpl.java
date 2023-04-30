@@ -66,7 +66,7 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public List<Film>  getRecommendations(long userId) {
+    public List<Film> getRecommendations(long userId) {
         try {
             String sql = "SELECT f.FILM_ID, f.FILM_TITLE, f.DESCRIPTION, f.RELEASE_DATE, f.DURATION, f.MPA_ID\n" +
                     "FROM (SELECT ml.user_id, ml.FILM_ID, ml2.USER_ID AS other_user \n" +
@@ -83,6 +83,7 @@ public class UserDaoImpl implements UserDao {
             throw new ObjectNotFoundException("Пользователь не найден");
         }
     }
+
     @Override
     public void delete(long userId) {
         String sql = "DELETE FROM users\n" +
