@@ -130,7 +130,7 @@ public class FilmDaoImpl implements FilmDao {
         jdbcTemplate.update(sql, filmId);
     }
 
-
+    @Override
     public List<Film> getCommonFilms(long userId, long friendId) {
         String sql = "SELECT fffu.FILM_ID, fffu.FILM_TITLE, fffu.DESCRIPTION, fffu.RELEASE_DATE," +
                 "fffu.DURATION,fffu.MPA_ID, fffu.MPA_NAME, fg.GENRE_ID\n" +
