@@ -18,4 +18,6 @@ public interface FilmDao {
 
     List<Film> getDirectorFilms(int directorId, String sortBy);
 
+    void delete(long filmId);
+
 }

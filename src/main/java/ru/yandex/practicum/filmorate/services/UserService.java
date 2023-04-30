@@ -58,4 +58,9 @@ public class UserService {
         }
     }
 
+    public void delete(long userId) {
+        userDao.get(userId);
+        userDao.delete(userId);
+    }
+
 }
