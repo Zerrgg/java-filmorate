@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.dao.UserDao;
 import ru.yandex.practicum.filmorate.exception.ObjectNotFoundException;
+import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
 
 import javax.validation.ValidationException;
@@ -56,6 +57,11 @@ public class UserService {
             log.info("Не был указан пользователь в запросе");
             user.setName(user.getLogin());
         }
+    }
+
+    public List<Film> getRecommendationsForUser(long userId) {
+        userDao.get(userId);
+        return userDao.getRecommendations(userId);
     }
 
     public void delete(long userId) {
