@@ -65,4 +65,9 @@ public class UserService {
         userDao.get(id);
         return feedDao.getFeed(id);
     }
+    public void delete(long userId) {
+        userDao.get(userId);
+        userDao.delete(userId);
+    }
+
 }

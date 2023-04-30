@@ -75,4 +75,9 @@ public class FilmService {
         }
         return filmDao.getFilmBySearch(query, by);
     }
+
+    public void delete(long filmId) {
+        filmDao.get(filmId);
+        filmDao.delete(filmId);
+    }
 }
