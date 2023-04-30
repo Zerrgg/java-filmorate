@@ -29,8 +29,6 @@ public class FilmDaoImpl implements FilmDao {
     private final FilmMapper filmMapper;
     private final DirectorDao directorDao;
 
-
-
     @Override
     public List<Film> getAll() {
         String sql = "SELECT*\n" +
@@ -123,6 +121,13 @@ public class FilmDaoImpl implements FilmDao {
                 throw new ValidationException("Некорректный параметр сортировки");
         }
         return jdbcTemplate.query(sql, filmMapper, directorId);
+    }
+
+    @Override
+    public void delete(long filmId) {
+        String sql = "DELETE FROM films\n" +
+                "WHERE film_id = ?";
+        jdbcTemplate.update(sql, filmId);
     }
 
 

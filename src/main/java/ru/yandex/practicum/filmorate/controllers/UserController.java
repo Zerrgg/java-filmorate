@@ -41,4 +41,10 @@ public class UserController {
         return userService.update(user);
     }
 
+    @DeleteMapping("{userId}")
+    public void delete(@PathVariable long userId) {
+        log.info("DELETE запрос на удаление пользователя с id: {}", userId);
+        userService.delete(userId);
+    }
+
 }
