@@ -17,4 +17,5 @@ public interface UserDao {
 
     List<Film>  getRecommendations(long id);
 
+    void delete(long userId);
 }

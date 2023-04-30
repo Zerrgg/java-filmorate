@@ -47,4 +47,10 @@ public class UserController {
         log.info("GET запрос на получение рекомендации для пользователя с id: {}", id);
         return userService.getRecommendationsForUser(id);
     }
+    @DeleteMapping("{userId}")
+    public void delete(@PathVariable long userId) {
+        log.info("DELETE запрос на удаление пользователя с id: {}", userId);
+        userService.delete(userId);
+    }
+
 }

@@ -122,4 +122,11 @@ public class FilmDaoImpl implements FilmDao {
         }
         return jdbcTemplate.query(sql, filmMapper, directorId);
     }
+
+    @Override
+    public void delete(long filmId) {
+        String sql = "DELETE FROM films\n" +
+                "WHERE film_id = ?";
+        jdbcTemplate.update(sql, filmId);
+    }
 }

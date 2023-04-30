@@ -83,4 +83,11 @@ public class UserDaoImpl implements UserDao {
             throw new ObjectNotFoundException("Пользователь не найден");
         }
     }
+    @Override
+    public void delete(long userId) {
+        String sql = "DELETE FROM users\n" +
+                "WHERE user_id = ?";
+        jdbcTemplate.update(sql, userId);
+    }
+
 }

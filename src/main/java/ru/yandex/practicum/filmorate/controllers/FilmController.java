@@ -55,4 +55,10 @@ public class FilmController {
                 "популярных фильмов расширенного поиска параметрами: QUERY = {}, BY = {}.", query, by);
         return filmService.searchFilms(query, by);
     }
+
+    @DeleteMapping("/{filmId}")
+    public void delete(@PathVariable long filmId) {
+        log.info("DELETE запрос на удаление фильма с id: {}", filmId);
+        filmService.delete(filmId);
+    }
 }

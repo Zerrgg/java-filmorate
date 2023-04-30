@@ -64,4 +64,9 @@ public class UserService {
         return userDao.getRecommendations(userId);
     }
 
+    public void delete(long userId) {
+        userDao.get(userId);
+        userDao.delete(userId);
+    }
+
 }
