@@ -16,7 +16,6 @@ import ru.yandex.practicum.filmorate.model.Director;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @Slf4j
@@ -32,16 +31,13 @@ public class FilmDaoImpl implements FilmDao {
 
     @Override
     public List<Film> getAll() {
-        String sql = "SELECT*\n" +
-                "FROM films";
+        String sql = "SELECT*\n" + "FROM films";
         return jdbcTemplate.query(sql, filmMapper);
     }
 
     @Override
     public Film add(Film film) {
-        SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
-                .withTableName("films")
-                .usingGeneratedKeyColumns("film_id");
+        SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName("films").usingGeneratedKeyColumns("film_id");
         film.setId(simpleJdbcInsert.executeAndReturnKey(film.toMap()).longValue());
         List<Genre> filmGenres = genreDao.add(film.getId(), film.getGenres());
         film.setGenres(filmGenres);
@@ -52,35 +48,20 @@ public class FilmDaoImpl implements FilmDao {
 
     @Override
     public Film update(Film film) {
-        String sql = "UPDATE films SET film_title=?, description=?, duration=?, release_date=?,mpa_id=?\n" +
-                "WHERE film_id=? ";
-        jdbcTemplate.update(sql,
-                film.getName(),
-                film.getDescription(),
-                film.getDuration(),
-                film.getReleaseDate(),
-                film.getMpa().getId(),
-                film.getId());
+        String sql = "UPDATE films SET film_title=?, description=?, duration=?, release_date=?,mpa_id=?\n" + "WHERE film_id=? ";
+        jdbcTemplate.update(sql, film.getName(), film.getDescription(), film.getDuration(), film.getReleaseDate(), film.getMpa().getId(), film.getId());
         return film;
     }
 
     @Override
     public Film get(long filmId) {
-        String sql = "SELECT*\n" +
-                "FROM films\n" +
-                "WHERE film_id=?";
-        return jdbcTemplate.query(sql, new FilmMapper(mpaDao, genreDao, directorDao), filmId).stream().findFirst()
-                .orElseThrow(() -> new ObjectNotFoundException("Фильм не найден"));
+        String sql = "SELECT*\n" + "FROM films\n" + "WHERE film_id=?";
+        return jdbcTemplate.query(sql, new FilmMapper(mpaDao, genreDao, directorDao), filmId).stream().findFirst().orElseThrow(() -> new ObjectNotFoundException("Фильм не найден"));
     }
 
     @Override
     public List<Film> getFilmBySearch(String query, String by) {
-        StringBuilder sql = new StringBuilder("SELECT * "
-                + "FROM films f "
-                + "LEFT JOIN movie_likes ml ON f.film_id = ml.film_id "
-                + "LEFT JOIN mpa m ON m.mpa_id = f.mpa_id "
-                + "LEFT JOIN film_director fd ON f.film_id = fd.film_id "
-                + "LEFT JOIN director d ON fd.director_id = d.director_id ");
+        StringBuilder sql = new StringBuilder("SELECT * " + "FROM films f " + "LEFT JOIN movie_likes ml ON f.film_id = ml.film_id " + "LEFT JOIN mpa m ON m.mpa_id = f.mpa_id " + "LEFT JOIN film_director fd ON f.film_id = fd.film_id " + "LEFT JOIN director d ON fd.director_id = d.director_id ");
         if (by.equals("title")) {
             sql.append("WHERE LOWER(f.film_title) LIKE LOWER('%").append(query).append("%') ");
         }
@@ -100,21 +81,11 @@ public class FilmDaoImpl implements FilmDao {
         String sql;
         switch (sortBy) {
             case "year":
-                sql = "SELECT*\n" +
-                        "FROM film_director fd\n" +
-                        "JOIN films f ON fd.film_id=f.film_id\n" +
-                        "WHERE fd.director_id=?\n" +
-                        "ORDER BY f.release_date";
+                sql = "SELECT*\n" + "FROM film_director fd\n" + "JOIN films f ON fd.film_id=f.film_id\n" + "WHERE fd.director_id=?\n" + "ORDER BY f.release_date";
                 break;
 
             case "likes":
-                sql = "SELECT*\n" +
-                        "FROM film_director fd\n" +
-                        "JOIN films f ON fd.film_id=f.film_id\n" +
-                        "LEFT JOIN movie_likes ml ON fd.film_id=ml.film_id\n" +
-                        "WHERE fd.director_id=?\n" +
-                        "GROUP BY fd.film_id, ml.user_id\n" +
-                        "ORDER BY COUNT (ml.user_id) DESC";
+                sql = "SELECT*\n" + "FROM film_director fd\n" + "JOIN films f ON fd.film_id=f.film_id\n" + "LEFT JOIN movie_likes ml ON fd.film_id=ml.film_id\n" + "WHERE fd.director_id=?\n" + "GROUP BY fd.film_id, ml.user_id\n" + "ORDER BY COUNT (ml.user_id) DESC";
                 break;
 
             default:
@@ -126,28 +97,26 @@ public class FilmDaoImpl implements FilmDao {
 
     @Override
     public void delete(long filmId) {
-        String sql = "DELETE FROM films\n" +
-                "WHERE film_id = ?";
+        String sql = "DELETE FROM films\n" + "WHERE film_id = ?";
         jdbcTemplate.update(sql, filmId);
     }
 
     @Override
-    public List<Film> getPopularsFilms(Integer count, Integer genreId, LocalDate year) {
-        StringBuilder sql = new StringBuilder("SELECT f.FILM_ID FROM FILMS f \n");
+    public List<Film> getPopularsFilms(Integer count, Integer genreId, Integer year) {
+        StringBuilder sql = new StringBuilder("SELECT f.* FROM FILMS f \n");
 
         if (null != genreId) {
-            sql.append("LEFT JOIN FILM_GENRE fg ON f.FILM_ID  = fg.FILM_ID AND fg.GENRE_ID = ?");
+            sql.append("INNER JOIN FILM_GENRE fg ON f.FILM_ID  = fg.FILM_ID AND fg.GENRE_ID = ").append(genreId);
+            sql.append(" LEFT JOIN GENRES g ON fg.GENRE_ID = g.GENRE_ID \n");
         }
 
-        sql.append("LEFT JOIN GENRES g ON fg.GENRE_ID = g.GENRE_ID \n" +
-                "LEFT JOIN MOVIE_LIKES ml ON f.FILM_ID = ml.FILM_ID\n");
+        sql.append("left JOIN MOVIE_LIKES ml ON f.FILM_ID = ml.FILM_ID\n");
 
         if (null != year) {
-            sql.append("WHERE YEAR(f.RELEASE_DATE) = ?\n");
+            sql.append("WHERE YEAR(f.RELEASE_DATE) = '").append(year).append("'\n");
         }
 
-        sql.append("GROUP BY f.FILM_ID\n" +
-                "ORDER BY count(ML.FILM_ID) DESC");
+        sql.append("GROUP BY f.FILM_ID\n" + "ORDER BY count(ML.FILM_ID) DESC " + "LIMIT ").append(count);
 
         return jdbcTemplate.query(sql.toString(), filmMapper);
     }

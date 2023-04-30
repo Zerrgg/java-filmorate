@@ -81,18 +81,18 @@ public class FilmService {
         filmDao.delete(filmId);
     }
 
-    public List<Film> getPopularsFilms(Integer count, Integer genreId, LocalDate year) {
+    public List<Film> getPopularsFilms(Integer count, Integer genreId, Integer year) {
         if (count <= 0) {
             log.info("Размер списка популярных фильмов не может быть равна нулю или меньше нуля.");
             throw new javax.validation.ValidationException("Ошибка валидации");
         }
-        if ((0 > genreId || genreId > genreDao.getAll().size())) {
-            log.info("Id жанра не должен быть меньше 0 или больше " + genreDao.getAll().size());
-            throw new javax.validation.ValidationException("Ошибка валидации");
-        }
-        if (year.isBefore(BOUNDARY_DATE) || year.isAfter(LocalDate.now())) {
-            log.info("Ошибка в дате релиза. Дата релиза должна быть до {} и после {}", BOUNDARY_DATE, LocalDate.now());
-        }
+//        if ((0 > genreId || genreId > genreDao.getAll().size())) {
+//            log.info("Id жанра не должен быть меньше 0 или больше " + genreDao.getAll().size());
+//            throw new javax.validation.ValidationException("Ошибка валидации");
+//        }
+//        if (year.isBefore(BOUNDARY_DATE) || year.isAfter(LocalDate.now())) {
+//            log.info("Ошибка в дате релиза. Дата релиза должна быть до {} и после {}", BOUNDARY_DATE, LocalDate.now());
+//        }
         return filmDao.getPopularsFilms(count, genreId, year);
     }
 }

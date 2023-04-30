@@ -6,10 +6,6 @@ import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.dao.FilmDao;
 import ru.yandex.practicum.filmorate.dao.LikeDao;
 import ru.yandex.practicum.filmorate.dao.UserDao;
-import ru.yandex.practicum.filmorate.model.Film;
-
-import javax.validation.ValidationException;
-import java.util.List;
 
 @Slf4j
 @Service
@@ -31,13 +27,4 @@ public class LikeService {
         userDao.get(userId);
         likeDao.delete(filmId, userId);
     }
-
-    public List<Film> getPopularFilms(int count) {
-        if (count <= 0) {
-            log.info("Размер списка популярных фильмов не может быть равна нулю или меньше нуля.");
-            throw new ValidationException("Ошибка валидации");
-        }
-        return likeDao.getPopularFilms(count);
-    }
-
 }
