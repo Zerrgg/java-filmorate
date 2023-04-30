@@ -16,6 +16,7 @@ import ru.yandex.practicum.filmorate.model.Director;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Slf4j
@@ -121,5 +122,26 @@ public class FilmDaoImpl implements FilmDao {
                 throw new ValidationException("Некорректный параметр сортировки");
         }
         return jdbcTemplate.query(sql, filmMapper, directorId);
+    }
+
+    @Override
+    public List<Film> getPopularsFilms(Integer count, Integer genreId, LocalDate year) {
+        StringBuilder sql = new StringBuilder("SELECT f.FILM_ID FROM FILMS f \n");
+
+        if (null != genreId) {
+            sql.append("LEFT JOIN FILM_GENRE fg ON f.FILM_ID  = fg.FILM_ID AND fg.GENRE_ID = ?");
+        }
+
+        sql.append("LEFT JOIN GENRES g ON fg.GENRE_ID = g.GENRE_ID \n" +
+                "LEFT JOIN MOVIE_LIKES ml ON f.FILM_ID = ml.FILM_ID\n");
+
+        if (null != year) {
+            sql.append("WHERE YEAR(f.RELEASE_DATE) = ?\n");
+        }
+
+        sql.append("GROUP BY f.FILM_ID\n" +
+                "ORDER BY count(ML.FILM_ID) DESC");
+
+        return jdbcTemplate.query(sql.toString(), filmMapper);
     }
 }
