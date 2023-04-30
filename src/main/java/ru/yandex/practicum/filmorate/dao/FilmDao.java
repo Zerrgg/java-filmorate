@@ -21,4 +21,6 @@ public interface FilmDao {
 
     List<Film> getPopularsFilms(Integer count, Integer genreId, LocalDate year);
 
+    void delete(long filmId);
+
 }

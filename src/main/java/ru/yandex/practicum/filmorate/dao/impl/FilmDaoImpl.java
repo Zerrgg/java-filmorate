@@ -125,6 +125,13 @@ public class FilmDaoImpl implements FilmDao {
     }
 
     @Override
+    public void delete(long filmId) {
+        String sql = "DELETE FROM films\n" +
+                "WHERE film_id = ?";
+        jdbcTemplate.update(sql, filmId);
+    }
+
+    @Override
     public List<Film> getPopularsFilms(Integer count, Integer genreId, LocalDate year) {
         StringBuilder sql = new StringBuilder("SELECT f.FILM_ID FROM FILMS f \n");
 
