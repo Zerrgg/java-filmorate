@@ -6,8 +6,8 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.dao.FeedDao;
 import ru.yandex.practicum.filmorate.dao.UserDao;
-import ru.yandex.practicum.filmorate.model.Event;
 import ru.yandex.practicum.filmorate.exception.ObjectNotFoundException;
+import ru.yandex.practicum.filmorate.model.Event;
 import ru.yandex.practicum.filmorate.model.User;
 
 import javax.validation.ValidationException;
@@ -65,6 +65,7 @@ public class UserService {
         userDao.get(id);
         return feedDao.getFeed(id);
     }
+
     public void delete(long userId) {
         userDao.get(userId);
         userDao.delete(userId);

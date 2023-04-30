@@ -47,6 +47,7 @@ public class UserController {
         log.debug("GET запрос на получение ленты событий");
         return userService.getFeed(id);
     }
+
     @DeleteMapping("{userId}")
     public void delete(@PathVariable long userId) {
         log.info("DELETE запрос на удаление пользователя с id: {}", userId);
