@@ -13,6 +13,7 @@ public interface FilmDao {
     Film update(Film film);
 
     Film get(long filmId);
+
     List<Film> getCommonFilms(long userId, long friendId);
 
     List<Film> getFilmBySearch(String query, String by);
