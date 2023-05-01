@@ -1,20 +1,14 @@
 package ru.yandex.practicum.filmorate.services;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.dao.FeedDao;
 import ru.yandex.practicum.filmorate.dao.FilmDao;
 import ru.yandex.practicum.filmorate.dao.LikeDao;
-import ru.yandex.practicum.filmorate.model.EventTypes;
 import ru.yandex.practicum.filmorate.dao.UserDao;
-import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.EventTypes;
 import ru.yandex.practicum.filmorate.model.Operations;
 
-import javax.validation.ValidationException;
-import java.util.List;
-
-@Slf4j
 @Service
 @RequiredArgsConstructor
 public class LikeService {

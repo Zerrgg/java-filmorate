@@ -30,7 +30,7 @@ public class FriendService {
 
     public void add(long userId, long userFriendId) {
         if (userFriendId <= 0 || userId <= 0) {
-            log.warn("Некорректные данные: c userId = {} или userFriendI = {}", userId, userFriendId);
+            log.info("Некорректные данные: c userId = {} или userFriendI = {}", userId, userFriendId);
             throw new ObjectNotFoundException("Пользователь не найден");
         }
         friendDao.add(userId, userFriendId);
