@@ -74,7 +74,7 @@ public class FilmDaoImpl implements FilmDao {
 
     @Override
     public List<Film> getFilmBySearch(String query, String by) {
-        StringBuilder sql = new StringBuilder("SELECT * "
+        StringBuilder sql = new StringBuilder("SELECT f.* "
                 + "FROM films f "
                 + "LEFT JOIN movie_likes ml ON f.film_id = ml.film_id "
                 + "LEFT JOIN mpa m ON m.mpa_id = f.mpa_id "
