@@ -13,7 +13,7 @@ public class LikeDaoImpl implements LikeDao {
 
     @Override
     public void add(long filmId, long userId) {
-        String sql = "INSERT INTO movie_likes(user_id, film_id) VALUES(?,?)";
+        String sql = "MERGE INTO movie_likes(user_id, film_id) VALUES(?,?)";
         jdbcTemplate.update(sql, filmId, userId);
     }
 
