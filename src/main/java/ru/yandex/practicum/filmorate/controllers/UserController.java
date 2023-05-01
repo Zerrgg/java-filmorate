@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.model.Event;
+import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.services.UserService;
 
@@ -46,6 +47,12 @@ public class UserController {
     public List<Event> showFeed(@PathVariable long id) {
         log.debug("GET запрос на получение ленты событий");
         return userService.getFeed(id);
+    }
+
+    @GetMapping("/{id}/recommendations")
+    public List<Film> getRecommendations(@PathVariable long id) {
+        log.info("GET запрос на получение рекомендации для пользователя с id: {}", id);
+        return userService.getRecommendationsForUser(id);
     }
 
     @DeleteMapping("{userId}")

@@ -8,6 +8,7 @@ import ru.yandex.practicum.filmorate.dao.FeedDao;
 import ru.yandex.practicum.filmorate.dao.UserDao;
 import ru.yandex.practicum.filmorate.exception.ObjectNotFoundException;
 import ru.yandex.practicum.filmorate.model.Event;
+import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
 
 import javax.validation.ValidationException;
@@ -64,6 +65,11 @@ public class UserService {
     public List<Event> getFeed(long id) {
         userDao.get(id);
         return feedDao.getFeed(id);
+    }
+
+    public List<Film> getRecommendationsForUser(long userId) {
+        userDao.get(userId);
+        return userDao.getRecommendations(userId);
     }
 
     public void delete(long userId) {

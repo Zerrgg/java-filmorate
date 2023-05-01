@@ -129,4 +129,29 @@ public class FilmDaoImpl implements FilmDao {
                 "WHERE film_id = ?";
         jdbcTemplate.update(sql, filmId);
     }
+
+    @Override
+    public List<Film> getCommonFilms(long userId, long friendId) {
+        String sql = "SELECT fffu.FILM_ID, fffu.FILM_TITLE, fffu.DESCRIPTION, fffu.RELEASE_DATE," +
+                "fffu.DURATION,fffu.MPA_ID, fffu.MPA_NAME, fg.GENRE_ID\n" +
+                "FROM(SELECT *\n" +
+                "FROM(\n" +
+                "SELECT mpf.*, ml.USER_ID AS like_first_user \n" +
+                "FROM\n" +
+                "(SELECT mpfilm.*\n" +
+                "FROM (SELECT f.*, m.mpa_name, COUNT(ml.user_id) AS likes\n" +
+                "FROM FILMS AS f LEFT JOIN MOVIE_LIKES ML ON f.FILM_ID = ML.FILM_ID \n" +
+                "JOIN MPA M ON f.MPA_ID = M.MPA_ID\n" +
+                "GROUP BY f.FILM_ID\n" +
+                "ORDER BY likes desc) AS mpfilm) AS mpf\n" +
+                "LEFT JOIN MOVIE_LIKES ML ON mpf.FILM_ID=ml.FILM_ID\n" +
+                "WHERE ml.USER_ID=?) AS favorite_films_first_user) AS fffu\n" +
+                "LEFT JOIN MOVIE_LIKES ML ON fffu.FILM_ID=ml.FILM_ID\n" +
+                "LEFT JOIN FRIENDSHIP FS ON fffu.like_first_user=fs.USER_ID_WHOM_REQUEST_WAS_SENT\n" +
+                "LEFT JOIN FRIENDSHIP fs2 ON fffu.like_first_user=fs2.USER_ID_WHO_SENT_REQUEST\n" +
+                "LEFT JOIN FILM_GENRE AS fg ON fffu.FILM_ID=fg.FILM_ID\n" +
+                "WHERE ml.USER_ID=?\n" +
+                "GROUP BY fffu.FILM_ID";
+        return jdbcTemplate.query(sql, filmMapper, userId, friendId);
+    }
 }
