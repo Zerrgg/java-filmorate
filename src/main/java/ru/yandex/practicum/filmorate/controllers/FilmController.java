@@ -7,6 +7,7 @@ import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.services.FilmService;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Positive;
 import java.util.List;
 
 @Slf4j
@@ -60,6 +61,15 @@ public class FilmController {
     public void delete(@PathVariable long filmId) {
         log.info("DELETE запрос на удаление фильма с id: {}", filmId);
         filmService.delete(filmId);
+    }
+
+    @GetMapping("/popular")
+    public List<Film> getPopularsFilms(
+            @Positive @RequestParam(value = "count", defaultValue = "10") Integer count,
+            @RequestParam(required = false) Integer genreId,
+            @RequestParam(required = false) Integer year) {
+        log.info("GET запрос на просмотр популярных фильмов");
+        return filmService.getPopularsFilms(count, genreId, year);
     }
 
     @GetMapping("/common")

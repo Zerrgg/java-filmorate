@@ -154,4 +154,24 @@ public class FilmDaoImpl implements FilmDao {
                 "GROUP BY fffu.FILM_ID";
         return jdbcTemplate.query(sql, filmMapper, userId, friendId);
     }
+
+    @Override
+    public List<Film> getPopularsFilms(Integer count, Integer genreId, Integer year) {
+        StringBuilder sql = new StringBuilder("SELECT f.* FROM FILMS f \n");
+
+        if (null != genreId) {
+            sql.append("INNER JOIN FILM_GENRE fg ON f.FILM_ID  = fg.FILM_ID AND fg.GENRE_ID = ").append(genreId);
+            sql.append(" LEFT JOIN GENRES g ON fg.GENRE_ID = g.GENRE_ID \n");
+        }
+
+        sql.append("left JOIN MOVIE_LIKES ml ON f.FILM_ID = ml.FILM_ID\n");
+
+        if (null != year) {
+            sql.append("WHERE YEAR(f.RELEASE_DATE) = '").append(year).append("'\n");
+        }
+
+        sql.append("GROUP BY f.FILM_ID\n" + "ORDER BY count(ML.FILM_ID) DESC " + "LIMIT ").append(count);
+
+        return jdbcTemplate.query(sql.toString(), filmMapper);
+    }
 }

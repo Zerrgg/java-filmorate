@@ -8,8 +8,8 @@ import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.dao.DirectorDao;
 import ru.yandex.practicum.filmorate.dao.FilmDao;
 import ru.yandex.practicum.filmorate.dao.GenreDao;
-import ru.yandex.practicum.filmorate.exception.ObjectNotFoundException;
 import ru.yandex.practicum.filmorate.dao.UserDao;
+import ru.yandex.practicum.filmorate.exception.ObjectNotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Director;
 import ru.yandex.practicum.filmorate.model.Film;
@@ -67,7 +67,7 @@ public class FilmService {
 
     private void validator(Film film) {
         if (film.getReleaseDate().isBefore(BOUNDARY_DATE)) {
-            log.warn("Ошибка в дате релиза. Дата релиза должна быть после {}", BOUNDARY_DATE);
+            log.info("Ошибка в дате релиза. Дата релиза должна быть после {}", BOUNDARY_DATE);
             throw new ValidationException("Ошибка в дате релиза фильма");
         }
     }
@@ -79,7 +79,7 @@ public class FilmService {
 
     public List<Film> searchFilms(String query, String by) {
         if (!(by.contains("title") || by.contains("director") || by.contains("title,director") || by.contains("director,title") || by.contains("unknown"))) {
-            log.debug("Некорректное значение выборки поиска в поле BY = {}", by);
+            log.info("Некорректное значение выборки поиска в поле BY = {}", by);
             throw new IllegalArgumentException("Некорректное значение выборки поиска");
         }
         return filmDao.getFilmBySearch(query, by);
@@ -88,5 +88,13 @@ public class FilmService {
     public void delete(long filmId) {
         filmDao.get(filmId);
         filmDao.delete(filmId);
+    }
+
+    public List<Film> getPopularsFilms(Integer count, Integer genreId, Integer year) {
+        if (count <= 0) {
+            log.info("Размер списка популярных фильмов не может быть равна нулю или меньше нуля.");
+            throw new javax.validation.ValidationException("Ошибка валидации");
+        }
+        return filmDao.getPopularsFilms(count, genreId, year);
     }
 }

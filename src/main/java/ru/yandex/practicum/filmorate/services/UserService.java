@@ -50,7 +50,7 @@ public class UserService {
 
     private void validator(User user) {
         if (user.getLogin().contains(" ")) {
-            log.warn("Пользователь при создании логина использовал символы пробела");
+            log.info("Пользователь при создании логина использовал символы пробела");
             throw new ValidationException("Логин содержит символы пробела");
         }
     }
