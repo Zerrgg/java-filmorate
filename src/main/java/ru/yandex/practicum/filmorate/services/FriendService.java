@@ -3,9 +3,12 @@ package ru.yandex.practicum.filmorate.services;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.filmorate.dao.FeedDao;
 import ru.yandex.practicum.filmorate.dao.FriendDao;
 import ru.yandex.practicum.filmorate.dao.UserDao;
 import ru.yandex.practicum.filmorate.exception.ObjectNotFoundException;
+import ru.yandex.practicum.filmorate.model.EventTypes;
+import ru.yandex.practicum.filmorate.model.Operations;
 import ru.yandex.practicum.filmorate.model.User;
 
 import java.util.List;
@@ -17,6 +20,8 @@ public class FriendService {
 
     private final FriendDao friendDao;
     private final UserDao userDao;
+    private final FeedDao feedDao;
+    private static final EventTypes EVENT_TYPE = EventTypes.FRIEND;
 
     public List<User> get(long id) {
         userDao.get(id);
@@ -29,12 +34,14 @@ public class FriendService {
             throw new ObjectNotFoundException("Пользователь не найден");
         }
         friendDao.add(userId, userFriendId);
+        feedDao.add(userId, userFriendId, EVENT_TYPE, Operations.ADD);
     }
 
     public void delete(long userId, long userFriendId) {
         userDao.get(userId);
         userDao.get(userFriendId);
         friendDao.delete(userId, userFriendId);
+        feedDao.add(userId, userFriendId, EVENT_TYPE, Operations.REMOVE);
     }
 
     public List<User> getMutualUsersFriends(long userId, long otherUserId) {
