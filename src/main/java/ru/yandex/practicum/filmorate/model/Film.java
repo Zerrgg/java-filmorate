@@ -33,6 +33,7 @@ public class Film {
     private List<Genre> genres;
     private List<Director> directors;
 
+
     public Film() {
     }
 
@@ -45,5 +46,4 @@ public class Film {
         values.put("mpa_id", mpa.getId());
         return values;
     }
-
 }

@@ -31,13 +31,16 @@ public class FilmDaoImpl implements FilmDao {
 
     @Override
     public List<Film> getAll() {
-        String sql = "SELECT*\n" + "FROM films";
+        String sql = "SELECT*\n" +
+                "FROM films";
         return jdbcTemplate.query(sql, filmMapper);
     }
 
     @Override
     public Film add(Film film) {
-        SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName("films").usingGeneratedKeyColumns("film_id");
+        SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
+                .withTableName("films")
+                .usingGeneratedKeyColumns("film_id");
         film.setId(simpleJdbcInsert.executeAndReturnKey(film.toMap()).longValue());
         List<Genre> filmGenres = genreDao.add(film.getId(), film.getGenres());
         film.setGenres(filmGenres);
@@ -48,20 +51,35 @@ public class FilmDaoImpl implements FilmDao {
 
     @Override
     public Film update(Film film) {
-        String sql = "UPDATE films SET film_title=?, description=?, duration=?, release_date=?,mpa_id=?\n" + "WHERE film_id=? ";
-        jdbcTemplate.update(sql, film.getName(), film.getDescription(), film.getDuration(), film.getReleaseDate(), film.getMpa().getId(), film.getId());
+        String sql = "UPDATE films SET film_title=?, description=?, duration=?, release_date=?,mpa_id=?\n" +
+                "WHERE film_id=? ";
+        jdbcTemplate.update(sql,
+                film.getName(),
+                film.getDescription(),
+                film.getDuration(),
+                film.getReleaseDate(),
+                film.getMpa().getId(),
+                film.getId());
         return film;
     }
 
     @Override
     public Film get(long filmId) {
-        String sql = "SELECT*\n" + "FROM films\n" + "WHERE film_id=?";
-        return jdbcTemplate.query(sql, new FilmMapper(mpaDao, genreDao, directorDao), filmId).stream().findFirst().orElseThrow(() -> new ObjectNotFoundException("Фильм не найден"));
+        String sql = "SELECT*\n" +
+                "FROM films\n" +
+                "WHERE film_id=?";
+        return jdbcTemplate.query(sql, new FilmMapper(mpaDao, genreDao, directorDao), filmId).stream().findFirst()
+                .orElseThrow(() -> new ObjectNotFoundException("Фильм не найден"));
     }
 
     @Override
     public List<Film> getFilmBySearch(String query, String by) {
-        StringBuilder sql = new StringBuilder("SELECT * " + "FROM films f " + "LEFT JOIN movie_likes ml ON f.film_id = ml.film_id " + "LEFT JOIN mpa m ON m.mpa_id = f.mpa_id " + "LEFT JOIN film_director fd ON f.film_id = fd.film_id " + "LEFT JOIN director d ON fd.director_id = d.director_id ");
+        StringBuilder sql = new StringBuilder("SELECT * "
+                + "FROM films f "
+                + "LEFT JOIN movie_likes ml ON f.film_id = ml.film_id "
+                + "LEFT JOIN mpa m ON m.mpa_id = f.mpa_id "
+                + "LEFT JOIN film_director fd ON f.film_id = fd.film_id "
+                + "LEFT JOIN director d ON fd.director_id = d.director_id ");
         if (by.equals("title")) {
             sql.append("WHERE LOWER(f.film_title) LIKE LOWER('%").append(query).append("%') ");
         }
@@ -81,11 +99,21 @@ public class FilmDaoImpl implements FilmDao {
         String sql;
         switch (sortBy) {
             case "year":
-                sql = "SELECT*\n" + "FROM film_director fd\n" + "JOIN films f ON fd.film_id=f.film_id\n" + "WHERE fd.director_id=?\n" + "ORDER BY f.release_date";
+                sql = "SELECT*\n" +
+                        "FROM film_director fd\n" +
+                        "JOIN films f ON fd.film_id=f.film_id\n" +
+                        "WHERE fd.director_id=?\n" +
+                        "ORDER BY f.release_date";
                 break;
 
             case "likes":
-                sql = "SELECT*\n" + "FROM film_director fd\n" + "JOIN films f ON fd.film_id=f.film_id\n" + "LEFT JOIN movie_likes ml ON fd.film_id=ml.film_id\n" + "WHERE fd.director_id=?\n" + "GROUP BY fd.film_id, ml.user_id\n" + "ORDER BY COUNT (ml.user_id) DESC";
+                sql = "SELECT*\n" +
+                        "FROM film_director fd\n" +
+                        "JOIN films f ON fd.film_id=f.film_id\n" +
+                        "LEFT JOIN movie_likes ml ON fd.film_id=ml.film_id\n" +
+                        "WHERE fd.director_id=?\n" +
+                        "GROUP BY fd.film_id, ml.user_id\n" +
+                        "ORDER BY COUNT (ml.user_id) DESC";
                 break;
 
             default:
@@ -97,8 +125,34 @@ public class FilmDaoImpl implements FilmDao {
 
     @Override
     public void delete(long filmId) {
-        String sql = "DELETE FROM films\n" + "WHERE film_id = ?";
+        String sql = "DELETE FROM films\n" +
+                "WHERE film_id = ?";
         jdbcTemplate.update(sql, filmId);
+    }
+
+    @Override
+    public List<Film> getCommonFilms(long userId, long friendId) {
+        String sql = "SELECT fffu.FILM_ID, fffu.FILM_TITLE, fffu.DESCRIPTION, fffu.RELEASE_DATE," +
+                "fffu.DURATION,fffu.MPA_ID, fffu.MPA_NAME, fg.GENRE_ID\n" +
+                "FROM(SELECT *\n" +
+                "FROM(\n" +
+                "SELECT mpf.*, ml.USER_ID AS like_first_user \n" +
+                "FROM\n" +
+                "(SELECT mpfilm.*\n" +
+                "FROM (SELECT f.*, m.mpa_name, COUNT(ml.user_id) AS likes\n" +
+                "FROM FILMS AS f LEFT JOIN MOVIE_LIKES ML ON f.FILM_ID = ML.FILM_ID \n" +
+                "JOIN MPA M ON f.MPA_ID = M.MPA_ID\n" +
+                "GROUP BY f.FILM_ID\n" +
+                "ORDER BY likes desc) AS mpfilm) AS mpf\n" +
+                "LEFT JOIN MOVIE_LIKES ML ON mpf.FILM_ID=ml.FILM_ID\n" +
+                "WHERE ml.USER_ID=?) AS favorite_films_first_user) AS fffu\n" +
+                "LEFT JOIN MOVIE_LIKES ML ON fffu.FILM_ID=ml.FILM_ID\n" +
+                "LEFT JOIN FRIENDSHIP FS ON fffu.like_first_user=fs.USER_ID_WHOM_REQUEST_WAS_SENT\n" +
+                "LEFT JOIN FRIENDSHIP fs2 ON fffu.like_first_user=fs2.USER_ID_WHO_SENT_REQUEST\n" +
+                "LEFT JOIN FILM_GENRE AS fg ON fffu.FILM_ID=fg.FILM_ID\n" +
+                "WHERE ml.USER_ID=?\n" +
+                "GROUP BY fffu.FILM_ID";
+        return jdbcTemplate.query(sql, filmMapper, userId, friendId);
     }
 
     @Override

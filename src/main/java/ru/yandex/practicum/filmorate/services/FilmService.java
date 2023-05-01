@@ -9,6 +9,7 @@ import ru.yandex.practicum.filmorate.dao.DirectorDao;
 import ru.yandex.practicum.filmorate.dao.FilmDao;
 import ru.yandex.practicum.filmorate.dao.GenreDao;
 import ru.yandex.practicum.filmorate.exception.ObjectNotFoundException;
+import ru.yandex.practicum.filmorate.dao.UserDao;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Director;
 import ru.yandex.practicum.filmorate.model.Film;
@@ -26,6 +27,8 @@ public class FilmService {
     private final FilmDao filmDao;
     private final GenreDao genreDao;
     private final DirectorDao directorDao;
+
+    private final UserDao userDao;
 
     public List<Film> getAll() {
         return filmDao.getAll();
@@ -54,6 +57,12 @@ public class FilmService {
             throw new ObjectNotFoundException("Фильм не найден");
         }
         return filmDao.get(filmId);
+    }
+
+    public List<Film> getCommonFilms(long userId, long friendId) {
+        userDao.get(userId);
+        userDao.get(friendId);
+        return filmDao.getCommonFilms(userId, friendId);
     }
 
     private void validator(Film film) {
