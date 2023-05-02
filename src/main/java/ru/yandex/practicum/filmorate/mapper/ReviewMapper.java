@@ -6,6 +6,8 @@ import ru.yandex.practicum.filmorate.model.Review;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 
 @Component
 public class ReviewMapper implements RowMapper<Review> {
@@ -19,5 +21,15 @@ public class ReviewMapper implements RowMapper<Review> {
         Long useful = rs.getLong("useful");
 
         return rs.wasNull() ? null : new Review(reviewId, content, isPositive, userId, filmId, useful);
+    }
+
+    public Map<String, Object> toMap(Review review) {
+        Map<String, Object> values = new HashMap<>();
+        values.put("user_id", review.getUserId());
+        values.put("film_id", review.getFilmId());
+        values.put("content", review.getContent());
+        values.put("isPositive", review.getIsPositive());
+        values.put("useful", review.getUseful());
+        return values;
     }
 }

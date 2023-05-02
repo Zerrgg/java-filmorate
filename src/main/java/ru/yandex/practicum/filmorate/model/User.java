@@ -3,10 +3,11 @@ package ru.yandex.practicum.filmorate.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
-import javax.validation.constraints.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Past;
 import java.time.LocalDate;
-import java.util.HashMap;
-import java.util.Map;
 
 @Data
 @AllArgsConstructor
@@ -22,17 +23,5 @@ public class User {
     @NotNull
     @Past
     private LocalDate birthday;
-
-    public Map<String, Object> toMap() {
-        Map<String, Object> values = new HashMap<>();
-        values.put("email", email);
-        values.put("login", login);
-        if (name == null || name.isBlank()) {
-            name = login;
-        }
-        values.put("user_name", name);
-        values.put("birthday", birthday);
-        return values;
-    }
 
 }

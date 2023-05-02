@@ -25,7 +25,7 @@ public class ReviewDaoImpl implements ReviewDao {
         SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName("reviews")
                 .usingGeneratedKeyColumns("reviews_id");
-        review.setReviewId(simpleJdbcInsert.executeAndReturnKey(review.toMap()).longValue());
+        review.setReviewId(simpleJdbcInsert.executeAndReturnKey(reviewMapper.toMap(review)).longValue());
         return review;
     }
 

@@ -38,7 +38,6 @@ public class DirectorService {
     }
 
     public void delete(int id) {
-        directorDao.get(id);
         directorDao.delete(id);
     }
 }

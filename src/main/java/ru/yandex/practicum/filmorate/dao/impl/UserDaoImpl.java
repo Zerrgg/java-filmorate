@@ -36,7 +36,7 @@ public class UserDaoImpl implements UserDao {
         SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName("users")
                 .usingGeneratedKeyColumns("user_id");
-        user.setId(simpleJdbcInsert.executeAndReturnKey(user.toMap()).longValue());
+        user.setId(simpleJdbcInsert.executeAndReturnKey(userMapper.toMap(user)).longValue());
         return user;
     }
 

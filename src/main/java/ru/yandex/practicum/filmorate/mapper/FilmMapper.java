@@ -14,7 +14,9 @@ import ru.yandex.practicum.filmorate.model.Mpa;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Component
 @RequiredArgsConstructor
@@ -38,4 +40,13 @@ public class FilmMapper implements RowMapper<Film> {
         return rs.wasNull() ? null : new Film(id, name, description, duration, releaseDate, mpa, genres, directors);
     }
 
+    public Map<String, Object> toMap(Film film) {
+        Map<String, Object> values = new HashMap<>();
+        values.put("film_title", film.getName());
+        values.put("description", film.getDescription());
+        values.put("release_date", film.getReleaseDate());
+        values.put("duration", film.getDuration());
+        values.put("mpa_id", film.getMpa().getId());
+        return values;
+    }
 }

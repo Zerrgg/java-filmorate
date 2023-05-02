@@ -87,7 +87,7 @@ public class DirectorDaoImpl implements DirectorDao {
         SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName("director")
                 .usingGeneratedKeyColumns("director_id");
-        director.setId((int) simpleJdbcInsert.executeAndReturnKey(director.toMap()));
+        director.setId((int) simpleJdbcInsert.executeAndReturnKey(directorMapper.toMap(director.getName())));
         return director;
     }
 
