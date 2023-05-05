@@ -1,10 +1,12 @@
 package ru.yandex.practicum.filmorate.dao.impl;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.dao.GenreDao;
+import ru.yandex.practicum.filmorate.exception.ObjectNotFoundException;
 import ru.yandex.practicum.filmorate.mapper.GenreMapper;
 import ru.yandex.practicum.filmorate.model.Genre;
 
@@ -13,18 +15,24 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
 @Repository
 @RequiredArgsConstructor
-public class GenreImpl implements GenreDao {
+public class GenreDaoImpl implements GenreDao {
 
     private final JdbcTemplate jdbcTemplate;
     private final GenreMapper genreMapper;
 
     @Override
     public Genre get(int genreId) {
-        String sql = "SELECT*\n" +
-                "FROM genres WHERE genre_id=?";
-        return jdbcTemplate.queryForObject(sql, genreMapper, genreId);
+        try {
+            String sql = "SELECT*\n" +
+                    "FROM genres WHERE genre_id=?";
+            return jdbcTemplate.queryForObject(sql, genreMapper, genreId);
+        } catch (RuntimeException e) {
+            log.info("Жанра с id - {} не существует", genreId);
+            throw new ObjectNotFoundException("Жанр не найден");
+        }
     }
 
     @Override
@@ -53,6 +61,7 @@ public class GenreImpl implements GenreDao {
     public List<Genre> add(long filmId, List<Genre> genres) {
         String sql = "MERGE INTO film_genre (film_id, genre_id) KEY(film_id, genre_id) VALUES (?, ?)";
         if (genres == null || genres.isEmpty()) {
+            log.info("Жанр ещё не был добавлен в базу.");
             return new ArrayList<>();
         }
         jdbcTemplate.batchUpdate(sql, new BatchPreparedStatementSetter() {

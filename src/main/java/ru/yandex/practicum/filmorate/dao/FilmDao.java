@@ -14,4 +14,14 @@ public interface FilmDao {
 
     Film get(long filmId);
 
+    List<Film> getCommonFilms(long userId, long friendId);
+
+    List<Film> getFilmBySearch(String query, String by);
+
+    List<Film> getDirectorFilms(int directorId, String sortBy);
+
+    List<Film> getPopularsFilms(Integer count, Integer genreId, Integer year);
+
+    void delete(long filmId);
+
 }
